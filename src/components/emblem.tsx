@@ -7,7 +7,7 @@ import { NAILONG_VIEWBOX, NailongFigure } from "@/components/nailong-figure"
 export function Emblem({ avatarRef }: { avatarRef: React.Ref<SVGGElement> }) {
   return (
     <svg viewBox="0 0 340 340" className="h-60 w-60 overflow-visible drop-shadow-xl sm:h-72 sm:w-72" aria-hidden="true">
-      <circle cx="170" cy="170" r="168" fill="#ffffff" />
+      <circle cx="170" cy="170" r="168" className="fill-campus-card dark:fill-[#17130c]" />
       <image href="/sdnu-emblem.svg" x="4" y="4" width="332" height="332" />
       <g ref={avatarRef} className="animate-nailong" style={{ transformBox: "fill-box" }}>
         <svg x="88" y="92" width="164" height="164" viewBox={NAILONG_VIEWBOX} overflow="visible">

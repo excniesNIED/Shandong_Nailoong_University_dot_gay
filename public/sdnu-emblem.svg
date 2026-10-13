@@ -7,6 +7,12 @@
 	.st2{fill-rule:evenodd;clip-rule:evenodd;fill:#004098;}
 	.st3{fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#000000;stroke-width:0.8504;stroke-miterlimit:22.9256;}
 	.st4{fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#000000;stroke-width:1.7008;stroke-miterlimit:22.9256;}
+	/* Dark mode: ink glyphs flip to white; red (.st0) and blue (.st2) stay. */
+	@media (prefers-color-scheme: dark) {
+		.st1{fill:#ffffff;}
+		.st3{stroke:#ffffff;}
+		.st4{stroke:#ffffff;}
+	}
 </style>
 	<g>
 		<polygon class="st2" points="66.3,84.4 66.3,72.7 26.9,43.5 26.9,67.7 56.3,90.8 56.3,93.5 27,69.9 27,81.8 66.3,113 66.3,87.3 

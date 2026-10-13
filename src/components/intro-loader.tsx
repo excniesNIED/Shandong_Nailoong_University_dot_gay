@@ -59,7 +59,7 @@ export function IntroLoader({ onReveal, onDone }: IntroLoaderProps) {
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-campus-parchment"
+      className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-campus-parchment dark:bg-background"
       role="status"
       aria-label="奶龙正在绘制中"
     >
@@ -67,14 +67,14 @@ export function IntroLoader({ onReveal, onDone }: IntroLoaderProps) {
       <svg data-figure viewBox={NAILONG_VIEWBOX} className="h-52 w-52 overflow-visible sm:h-64 sm:w-64" aria-hidden="true">
         <NailongFigure id="loader" strokeColor="#153e75" strokeWidth={0.075} />
       </svg>
-      <p data-caption className="mt-6 font-serif text-lg font-bold tracking-[0.3em] text-sdnu-navy sm:text-xl">
+      <p data-caption className="mt-6 font-serif text-lg font-bold tracking-[0.3em] text-sdnu-navy sm:text-xl dark:text-amber-300">
         {Array.from("山东奶龙大学").map((ch, i) => (
           <span key={i} className="inline-block">
             {ch}
           </span>
         ))}
       </p>
-      <div className="mt-6 h-0.5 w-40 overflow-hidden rounded-full bg-slate-200">
+      <div className="mt-6 h-0.5 w-40 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
         <div data-progress className="h-full origin-left bg-nailong-darkyellow" />
       </div>
     </div>

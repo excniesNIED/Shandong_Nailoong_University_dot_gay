@@ -28,5 +28,33 @@ function tone(type: OscillatorType, freqs: [number, number][], peak: number, len
   }
 }
 
-export const playSqueak = () => tone("sine", [[420, 0], [880, 0.12], [600, 0.25]], 0.3, 0.25)
-export const playChime = () => tone("triangle", [[880, 0], [1320, 0.08]], 0.18, 0.35)
+/** Click tracks: 1.mp3 25%, 2–6.mp3 15% each (sums to 100). */
+const CLICK_TRACKS: { src: string; weight: number }[] = [
+  { src: "/1.mp3", weight: 25 },
+  ...[2, 3, 4, 5, 6].map((n) => ({ src: `/${n}.mp3`, weight: 15 })),
+]
+
+/**
+ * Sound effects entry point.
+ * - "click": weighted-random mp3 from /1–6.mp3, fired on interactive clicks.
+ * - "chime": short synth confirmation for copy / replay feedback.
+ * Both are decoration; every failure path stays silent.
+ */
+export function playSound(kind: "click" | "chime") {
+  if (kind === "click") {
+    try {
+      const roll = Math.random() * 100
+      let acc = 0
+      const track = CLICK_TRACKS.find((t) => (acc += t.weight) > roll) ?? CLICK_TRACKS[0]
+      const el = new Audio(track.src)
+      el.volume = 0.7
+      void el.play().catch(() => {
+        // Autoplay rejection is fine; audio is decoration.
+      })
+    } catch {
+      // Audio is decoration only.
+    }
+    return
+  }
+  tone("triangle", [[880, 0], [1320, 0.08]], 0.18, 0.35)
+}

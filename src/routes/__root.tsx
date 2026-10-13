@@ -13,8 +13,8 @@ export const Route = createRootRoute({
   notFoundComponent: () => (
     <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
       <img src="/nailoog.webp" alt="山东奶龙大学校徽" width={96} height={96} className="size-24" />
-      <h1 className="font-serif text-2xl font-bold text-sdnu-navy">奶龙在千佛山迷路了</h1>
-      <p className="text-sm text-slate-500">这个页面不存在，可能去长清湖校区上课了。</p>
+      <h1 className="font-serif text-2xl font-bold text-sdnu-navy dark:text-slate-100">奶龙在千佛山迷路了</h1>
+      <p className="text-sm text-slate-500 dark:text-slate-400">这个页面不存在，可能去长清湖校区上课了。</p>
       <Button asChild className="rounded-full">
         <Link to="/">回到首页</Link>
       </Button>

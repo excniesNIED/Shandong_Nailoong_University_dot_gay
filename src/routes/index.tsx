@@ -18,7 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { QUOTES } from "@/lib/quotes"
-import { playChime, playSqueak } from "@/lib/sound"
+import { playSound } from "@/lib/sound"
 
 export const Route = createFileRoute("/")({ component: Home })
 
@@ -74,13 +74,13 @@ function Home() {
   }, [])
 
   const replay = () => {
-    playChime()
+    playSound("chime")
     setLoading(true)
     setLoaderKey((k) => k + 1)
   }
 
   const nextQuote = (e: React.MouseEvent) => {
-    playSqueak()
+    playSound("click")
     burstSparkles(e.clientX, e.clientY)
     setQuote((q) => (q + 1 + Math.floor(Math.random() * (QUOTES.length - 1))) % QUOTES.length)
     const avatar = avatarRef.current
@@ -97,7 +97,7 @@ function Home() {
   const copyGroup = async () => {
     try {
       await navigator.clipboard.writeText(QQ_GROUP)
-      playChime()
+      playSound("chime")
       setCopied(true)
       toast.success(`已复制 QQ 群号：${QQ_GROUP}`)
       window.setTimeout(() => setCopied(false), 2500)
@@ -107,7 +107,7 @@ function Home() {
   }
 
   return (
-    <div ref={pageRef} className="relative flex min-h-screen flex-col justify-between text-slate-800 selection:bg-amber-300 selection:text-sdnu-deep">
+    <div ref={pageRef} className="relative flex min-h-screen flex-col justify-between text-slate-800 selection:bg-amber-300 selection:text-sdnu-deep dark:text-slate-200">
       {loading && (
         <IntroLoader key={loaderKey} onReveal={_0x4e2f} onDone={() => setLoading(false)} />
       )}
@@ -130,19 +130,19 @@ function Home() {
           type="button"
           onClick={(e) => {
             burstSparkles(e.clientX, e.clientY)
-            playSqueak()
+            playSound("click")
             toast("山东奶龙大学欢迎你！", { icon: "🐲" })
           }}
           className="group flex cursor-pointer items-center space-x-3 transition-transform hover:scale-[1.02]"
         >
-          <span className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-sdnu-navy/20 transition group-hover:ring-amber-400 sm:h-10 sm:w-10">
+          <span className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-sdnu-navy/20 transition group-hover:ring-amber-400 sm:h-10 sm:w-10 dark:bg-slate-900">
             <img src="/nailoog.webp" alt="山东奶龙大学校徽" width={40} height={40} className="h-full w-full" />
           </span>
-          <span className="font-serif text-base font-bold tracking-wide text-sdnu-navy transition group-hover:text-amber-600 sm:text-lg">
+          <span className="font-serif text-base font-bold tracking-wide text-sdnu-navy transition group-hover:text-amber-600 sm:text-lg dark:text-slate-100 dark:group-hover:text-amber-400">
             山东奶龙大学
           </span>
         </button>
-        <div className="rounded-full border border-sdnu-navy/20 bg-white/70 px-3 py-1 font-sans text-xs tracking-widest text-sdnu-navy/80 uppercase shadow-xs backdrop-blur-sm">
+        <div className="rounded-full border border-sdnu-navy/20 bg-white/70 px-3 py-1 font-sans text-xs tracking-widest text-sdnu-navy/80 uppercase shadow-xs backdrop-blur-sm dark:border-slate-600/60 dark:bg-white/10 dark:text-slate-200">
           EST. 1950
         </div>
       </header>
@@ -150,9 +150,9 @@ function Home() {
       <main className="relative z-10 mx-auto flex max-w-4xl flex-1 flex-col items-center justify-center px-4 py-6 text-center sm:py-10">
         <div className="group relative my-3 select-none sm:my-5">
           <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-amber-300/25 via-yellow-200/15 to-blue-300/20 opacity-70 blur-2xl transition-opacity duration-700 group-hover:opacity-100" />
-          <div className="animate-spin-slow pointer-events-none absolute -inset-4 rounded-full border border-dashed border-sdnu-navy/25 sm:-inset-6" />
+          <div className="animate-spin-slow pointer-events-none absolute -inset-4 rounded-full border border-dashed border-sdnu-navy/25 sm:-inset-6 dark:border-slate-400/30" />
           <div className="animate-spin-reverse pointer-events-none absolute -inset-4 sm:-inset-6">
-            <span className="absolute top-0 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sdnu-navy shadow-md ring-4 ring-amber-300" />
+            <span className="absolute top-0 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sdnu-navy shadow-md ring-4 ring-amber-300 dark:bg-amber-400" />
           </div>
 
           <button
@@ -174,20 +174,20 @@ function Home() {
         <p
           data-enter
           aria-live="polite"
-          className="mt-6 min-h-[1.75rem] max-w-md font-serif text-sm text-amber-800 sm:text-base"
+          className="mt-6 min-h-[1.75rem] max-w-md font-serif text-sm text-amber-800 sm:text-base dark:text-amber-300"
         >
           「{QUOTES[quote]}」
         </p>
 
-        <p data-enter className="mt-3 mb-1 font-sans text-xs font-semibold tracking-[0.28em] text-slate-500 uppercase sm:text-sm">
+        <p data-enter className="mt-3 mb-1 font-sans text-xs font-semibold tracking-[0.28em] text-slate-500 uppercase sm:text-sm dark:text-slate-400">
           Shandong Nailong University
         </p>
 
-        <h1 data-enter className="mt-1 mb-4 font-serif text-4xl leading-tight font-black tracking-tight text-sdnu-navy sm:text-5xl md:text-6xl">
-          山东<span className="nailong-highlighter mx-1 text-sdnu-navy">奶龙</span>大学
+        <h1 data-enter className="mt-1 mb-4 font-serif text-4xl leading-tight font-black tracking-tight text-sdnu-navy sm:text-5xl md:text-6xl dark:text-slate-50">
+          山东<span className="nailong-highlighter mx-1 text-sdnu-navy dark:text-slate-50">奶龙</span>大学
         </h1>
 
-        <p data-enter className="mx-auto flex max-w-lg items-center justify-center space-x-1.5 font-serif text-base text-slate-600 sm:text-lg">
+        <p data-enter className="mx-auto flex max-w-lg items-center justify-center space-x-1.5 font-serif text-base text-slate-600 sm:text-lg dark:text-slate-300">
           <span>奶龙已就位，在千佛山与长清湖为山师人护学。</span>
           <span className="inline-block h-2 w-2 animate-ping rounded-full bg-emerald-500" title="系统护学状态正常" />
         </p>
@@ -196,15 +196,15 @@ function Home() {
           {["🏛️ 1950 年建校", "⭐ 冲一流 · 自封"].map((label) => (
             <span
               key={label}
-              className="rounded-full border border-slate-200/90 bg-white px-3.5 py-1 font-serif text-xs font-medium text-slate-600 shadow-2xs transition hover:border-amber-400 hover:text-amber-700"
+              className="rounded-full border border-slate-200/90 bg-white px-3.5 py-1 font-serif text-xs font-medium text-slate-600 shadow-2xs transition hover:border-amber-400 hover:text-amber-700 dark:border-slate-600/70 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:border-amber-500 dark:hover:text-amber-400"
             >
               {label}
             </span>
           ))}
-          <span className="rounded-full border border-amber-300/80 bg-amber-50/90 px-3.5 py-1 font-serif text-xs font-medium text-amber-800 shadow-2xs">
+          <span className="rounded-full border border-amber-300/80 bg-amber-50/90 px-3.5 py-1 font-serif text-xs font-medium text-amber-800 shadow-2xs dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300">
             🛡️ 奶龙特级护学
           </span>
-          <span className="hidden rounded-full border border-blue-200/70 bg-blue-50/80 px-3.5 py-1 font-serif text-xs font-medium text-blue-800 shadow-2xs sm:inline-block">
+          <span className="hidden rounded-full border border-blue-200/70 bg-blue-50/80 px-3.5 py-1 font-serif text-xs font-medium text-blue-800 shadow-2xs sm:inline-block dark:border-blue-500/40 dark:bg-blue-500/10 dark:text-blue-300">
             🎓 弘德明志 · 博学笃行
           </span>
         </div>
@@ -222,31 +222,31 @@ function Home() {
           <Button
             variant="outline"
             onClick={replay}
-            className="h-auto w-full rounded-full border-slate-300/80 bg-white px-7 py-3.5 text-sm text-slate-700 hover:border-slate-400 hover:bg-slate-50 sm:w-auto sm:text-base"
+            className="h-auto w-full rounded-full border-slate-300/80 bg-white px-7 py-3.5 text-sm text-slate-700 hover:border-slate-400 hover:bg-slate-50 sm:w-auto sm:text-base dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:bg-slate-700"
           >
-            <RotateCw className="text-slate-500" />
+            <RotateCw className="text-slate-500 dark:text-slate-400" />
             重新载入动画
           </Button>
         </div>
 
-        <div data-enter className="mt-8 flex flex-col items-center justify-center gap-2 text-xs text-slate-500 sm:flex-row">
+        <div data-enter className="mt-8 flex flex-col items-center justify-center gap-2 text-xs text-slate-500 sm:flex-row dark:text-slate-400">
           <span>山东奶龙大学群：</span>
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/80 px-3 py-1.5 shadow-xs backdrop-blur-xs">
-            <span className="font-sans font-semibold tracking-wider text-slate-800">{QQ_GROUP}</span>
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/80 px-3 py-1.5 shadow-xs backdrop-blur-xs dark:border-slate-600/70 dark:bg-slate-800/80">
+            <span className="font-sans font-semibold tracking-wider text-slate-800 dark:text-slate-200">{QQ_GROUP}</span>
             <button
               type="button"
               onClick={copyGroup}
-              className="flex cursor-pointer items-center gap-1 font-medium text-sdnu-navy transition hover:text-amber-600"
+              className="flex cursor-pointer items-center gap-1 font-medium text-sdnu-navy transition hover:text-amber-600 dark:text-amber-300 dark:hover:text-amber-400"
             >
               <Copy className="size-3.5" />
               {copied ? "已复制！" : "复制"}
             </button>
-            <span className="h-3 w-px bg-slate-200" />
+            <span className="h-3 w-px bg-slate-200 dark:bg-slate-600" />
             <a
               href={QQ_JOIN_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 font-medium text-sdnu-navy transition hover:text-amber-600"
+              className="flex items-center gap-1 font-medium text-sdnu-navy transition hover:text-amber-600 dark:text-amber-300 dark:hover:text-amber-400"
             >
               <Users className="size-3.5" />
               一键加群
@@ -257,19 +257,19 @@ function Home() {
         <div data-enter className="mt-4">
           <Dialog>
             <DialogTrigger asChild>
-              <button type="button" className="text-xs font-medium text-slate-500 underline-offset-4 transition hover:text-sdnu-navy hover:underline">
+              <button type="button" className="text-xs font-medium text-slate-500 underline-offset-4 transition hover:text-sdnu-navy hover:underline dark:text-slate-400 dark:hover:text-amber-300">
                 第一次来？先看看关于本站
               </button>
             </DialogTrigger>
-            <DialogContent className="max-h-[85vh] overflow-y-auto rounded-2xl border-amber-100 bg-white sm:max-w-md">
+            <DialogContent className="max-h-[85vh] overflow-y-auto rounded-2xl border-amber-100 bg-white sm:max-w-md dark:border-slate-700 dark:bg-card">
               <DialogHeader className="flex-row items-center gap-3 space-y-0 text-left">
                 <img src="/nailoog.webp" alt="" width={40} height={40} className="size-10 rounded-xl" />
                 <div>
-                  <DialogTitle className="font-serif text-lg text-sdnu-navy">关于山东奶龙大学</DialogTitle>
+                  <DialogTitle className="font-serif text-lg text-sdnu-navy dark:text-slate-100">关于山东奶龙大学</DialogTitle>
                   <DialogDescription className="font-sans text-xs">Nailong × Shandong Normal University</DialogDescription>
                 </div>
               </DialogHeader>
-              <div className="space-y-3 border-y border-slate-100 py-3 text-left font-serif text-xs leading-relaxed text-slate-600 sm:text-sm">
+              <div className="space-y-3 border-y border-slate-100 py-3 text-left font-serif text-xs leading-relaxed text-slate-600 sm:text-sm dark:border-slate-800 dark:text-slate-300">
                 <p>
                   <strong>山东奶龙大学</strong>是山东师范大学学子与萌系顶流“奶龙”的一次梦幻联动：活泼乐观、大肚能容，从容面对教资、考研与期末周。
                 </p>
@@ -277,9 +277,9 @@ function Home() {
                   <strong>山东师范大学</strong>坐落在历史文化名城济南，办学文脉可追溯到 1902 年山东大学堂师范馆，1950 年组建山东师范学院，1981 年更名为山东师范大学。学校秉承“尊贤尚功、奋发有为”的校园精神和“弘德明志、博学笃行”的校训，拥有千佛山和长清湖两个校区，现有 25 个学院（部）、64 个招生本科专业，是山东省人民政府和教育部共建高校、山东省高水平大学“冲一流”建设高校。
                 </p>
                 <p>
-                  载入动画里的奶龙由三次贝塞尔曲线逐笔绘出；点击校徽上的奶龙可以换一句山师语录。用终端访问 <code className="rounded bg-slate-100 px-1 font-mono text-[11px]">/78</code> 还有彩蛋。
+                  载入动画里的奶龙由三次贝塞尔曲线逐笔绘出；点击校徽上的奶龙可以换一句山师语录。用终端访问 <code className="rounded bg-slate-100 px-1 font-mono text-[11px] dark:bg-slate-700">/78</code> 还有彩蛋。
                 </p>
-                <div className="rounded-lg border border-amber-200/60 bg-amber-50/70 p-3 text-xs text-amber-900">
+                <div className="rounded-lg border border-amber-200/60 bg-amber-50/70 p-3 text-xs text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
                   💡 <strong>免责声明：</strong>本站为校园创意整活与设计实验，与山东师范大学官方无隶属关系。“前往山师官网”直达 sdnu.edu.cn。
                 </div>
               </div>
@@ -293,12 +293,12 @@ function Home() {
         </div>
       </main>
 
-      <footer className="relative z-10 mx-auto mt-auto w-full max-w-6xl border-t border-slate-200/60 px-6 py-6 text-center font-sans text-[11px] text-slate-400">
+      <footer className="relative z-10 mx-auto mt-auto w-full max-w-6xl border-t border-slate-200/60 px-6 py-6 text-center font-sans text-[11px] text-slate-400 dark:border-slate-700/60 dark:text-slate-500">
         <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
           <p>© 1950 - 2026 山东奶龙大学 · 弘德明志 博学笃行</p>
           <p className="flex items-center gap-1">
             非官方整活门户 · 纯属高校文化致敬 ·
-            <a href="/llms.txt" className="inline-flex items-center gap-0.5 hover:text-sdnu-navy">
+            <a href="/llms.txt" className="inline-flex items-center gap-0.5 hover:text-sdnu-navy dark:hover:text-amber-300">
               llms.txt <ExternalLink className="size-3" />
             </a>
           </p>

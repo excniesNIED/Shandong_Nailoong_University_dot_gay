@@ -24,7 +24,7 @@ export function IntroLoader({ onReveal, onDone }: IntroLoaderProps) {
   useLayoutEffect(() => {
     const root = rootRef.current
     if (!root) return
-    const strokes = root.querySelectorAll("[data-stroke]")
+    const strokes = Array.from(root.querySelectorAll<SVGGeometryElement>("[data-stroke]"))
     const wipe = root.querySelector("[data-wipe]")
     const caption = root.querySelectorAll("[data-caption] > span")
     const progress = root.querySelector("[data-progress]")
@@ -32,9 +32,15 @@ export function IntroLoader({ onReveal, onDone }: IntroLoaderProps) {
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     const ctx = gsap.context(() => {
+      // StrokeText-style dash: per-element measured length + 2% margin, no
+      // pathLength normalization. dasharray == pathLength (1) leaves rounding
+      // gaps at the path seams once the draw settles (ear tail, eye circle).
+      strokes.forEach((el) => {
+        const dash = el.getTotalLength() * 1.02
+        gsap.set(el, { strokeDasharray: dash, strokeDashoffset: dash })
+      })
       // Wipe rect covers y ∈ [-3.8, 4.4]; collapse to the bottom edge.
       gsap.set(wipe, { attr: { y: 4.4, height: 0 } })
-      gsap.set(strokes, { strokeDasharray: 1, strokeDashoffset: 1 })
       gsap.set(caption, { opacity: 0, y: 8 })
       gsap.set(progress, { scaleX: 0 })
 

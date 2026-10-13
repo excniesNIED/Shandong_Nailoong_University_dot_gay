@@ -34,26 +34,36 @@ const CLICK_TRACKS: { src: string; weight: number }[] = [
   ...[2, 3, 4, 5, 6].map((n) => ({ src: `/${n}.mp3`, weight: 15 })),
 ]
 
+/** Play an mp3 asset; silent on any failure (audio is decoration). */
+function track(src: string, volume = 0.7) {
+  try {
+    const el = new Audio(src)
+    el.volume = volume
+    void el.play().catch(() => {
+      // Autoplay rejection is fine; audio is decoration.
+    })
+  } catch {
+    // Audio is decoration only.
+  }
+}
+
 /**
  * Sound effects entry point.
  * - "click": weighted-random mp3 from /1–6.mp3, fired on interactive clicks.
- * - "chime": short synth confirmation for copy / replay feedback.
- * Both are decoration; every failure path stays silent.
+ * - "chime": short synth confirmation for copy feedback.
+ * - "reload": fixed /1.mp3 cue for the 重新载入动画 replay loader.
+ * All are decoration; every failure path stays silent.
  */
-export function playSound(kind: "click" | "chime") {
+export function playSound(kind: "click" | "chime" | "reload") {
   if (kind === "click") {
-    try {
-      const roll = Math.random() * 100
-      let acc = 0
-      const track = CLICK_TRACKS.find((t) => (acc += t.weight) > roll) ?? CLICK_TRACKS[0]
-      const el = new Audio(track.src)
-      el.volume = 0.7
-      void el.play().catch(() => {
-        // Autoplay rejection is fine; audio is decoration.
-      })
-    } catch {
-      // Audio is decoration only.
-    }
+    const roll = Math.random() * 100
+    let acc = 0
+    const chosen = CLICK_TRACKS.find((t) => (acc += t.weight) > roll) ?? CLICK_TRACKS[0]
+    track(chosen.src)
+    return
+  }
+  if (kind === "reload") {
+    track("/1.mp3")
     return
   }
   tone("triangle", [[880, 0], [1320, 0.08]], 0.18, 0.35)

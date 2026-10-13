@@ -74,7 +74,7 @@ function Home() {
   }, [])
 
   const replay = () => {
-    playSound("chime")
+    playSound("reload")
     setLoading(true)
     setLoaderKey((k) => k + 1)
   }

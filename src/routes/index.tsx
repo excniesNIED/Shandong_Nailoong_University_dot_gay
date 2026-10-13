@@ -64,16 +64,13 @@ function Home() {
     gsap.set(pageRef.current?.querySelectorAll("[data-enter]") ?? [], { opacity: 0, y: 16 })
   }, [loaderKey])
 
-  const reveal = useCallback(() => {
-    gsap.to(emblemRef.current, { scale: 1, rotate: 0, opacity: 1, duration: 0.85, ease: "back.out(1.7)" })
-    gsap.to(pageRef.current?.querySelectorAll("[data-enter]") ?? [], {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-      ease: "power2.out",
-      stagger: 0.07,
-      delay: 0.15,
-    })
+  const _0x4e2f = useCallback(() => {
+    const _0x8a1b = emblemRef.current
+    const _0x3f9c = pageRef.current?.querySelectorAll("[data-enter]") ?? []
+    const _0x7d4e = { scale: 1, rotate: 0, opacity: 1, duration: 0.85, ease: "back.out(1.7)" }
+    const _0x2b8f = { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", stagger: 0.07, delay: 0.15 }
+    gsap.to(_0x8a1b, _0x7d4e)
+    gsap.to(_0x3f9c, _0x2b8f)
   }, [])
 
   const replay = () => {
@@ -112,7 +109,7 @@ function Home() {
   return (
     <div ref={pageRef} className="relative flex min-h-screen flex-col justify-between text-slate-800 selection:bg-amber-300 selection:text-sdnu-deep">
       {loading && (
-        <IntroLoader key={loaderKey} onReveal={reveal} onDone={() => setLoading(false)} />
+        <IntroLoader key={loaderKey} onReveal={_0x4e2f} onDone={() => setLoading(false)} />
       )}
 
       <div className="pointer-events-none fixed inset-2 z-30 diploma-border md:inset-4" />
@@ -218,7 +215,7 @@ function Home() {
             className="group h-auto w-full rounded-full bg-sdnu-navy px-8 py-3.5 text-sm tracking-wide text-white shadow-lg shadow-sdnu-navy/25 hover:bg-sdnu-deep hover:shadow-xl hover:shadow-sdnu-navy/35 sm:w-auto sm:text-base"
           >
             <a href={OFFICIAL_URL} target="_blank" rel="noopener noreferrer">
-              前往山师官网
+              前往学校官网
               <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
             </a>
           </Button>

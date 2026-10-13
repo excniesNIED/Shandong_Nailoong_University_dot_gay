@@ -78,12 +78,13 @@ export function NailongFigure({ id, strokeColor = "#1f2937", strokeWidth = 0.07 
       <g data-fill clipPath={`url(#${id}-wipe)`}>
         <path d={SILHOUETTE} fill="#FFCA28" />
         <g clipPath={`url(#${id}-body)`}>
-          <ellipse cx="1.4" cy="2.8" rx="2.3" ry="1.9" fill="#FFF3C4" opacity="0.85" />
+          <ellipse cx="-0.2" cy="2.8" rx="2.3" ry="1.9" fill="#FFF3C4" opacity="0.85" />
           <ellipse cx="4.0" cy="1.2" rx="1.5" ry="2.8" fill="#F59E0B" opacity="0.25" />
         </g>
         <ellipse cx="-1.45" cy="-1.5" rx="0.18" ry="0.44" fill="#F59E0B" />
-        <circle cx={EYE.cx} cy={-EYE.cy} r={EYE.r} fill="#FFFDF9" />
-        <circle cx={PUPIL.cx} cy={-PUPIL.cy} r={PUPIL.r} fill="#111827" />
+        {/* Right eye (larger, front view) */}
+        <ellipse cx={EYE.cx} cy={-EYE.cy} rx={EYE.r * 1.1} ry={EYE.r * 1.15} fill="#FFFDF9" />
+        <ellipse cx={PUPIL.cx} cy={-PUPIL.cy} rx={PUPIL.r * 1.1} ry={PUPIL.r * 1.2} fill="#2D5A8C" />
         <circle cx={PUPIL.cx - 0.08} cy={-PUPIL.cy - 0.09} r="0.08" fill="#ffffff" />
         <ellipse cx="-0.45" cy="-0.85" rx="0.3" ry="0.18" fill="#F87171" opacity="0.55" />
       </g>
@@ -91,8 +92,8 @@ export function NailongFigure({ id, strokeColor = "#1f2937", strokeWidth = 0.07 
       {STROKE_PATHS.map((d) => (
         <path key={d} d={d} {...stroke} />
       ))}
-      <circle cx={EYE.cx} cy={-EYE.cy} r={EYE.r} {...stroke} />
-      <circle cx={PUPIL.cx} cy={-PUPIL.cy} r={PUPIL.r} {...stroke} strokeWidth={strokeWidth * 1.8} />
+      {/* Eye stroke for loader draw animation */}
+      <ellipse cx={EYE.cx} cy={-EYE.cy} rx={EYE.r * 1.1} ry={EYE.r * 1.15} {...stroke} strokeWidth={strokeWidth * 1.2} />
     </g>
   )
 }

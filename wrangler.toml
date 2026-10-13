@@ -1,0 +1,10 @@
+name = "mama-ascii"
+main = "src/index.js"
+compatibility_date = "2026-07-17"
+account_id = "547b4478f0399f2b115bf5dbec31f12e"
+
+# 山东奶龙大学.gay = xn--xhq02y0gz4ebvbj98t.gay (IDN zone, API uses punycode)
+routes = [
+  { pattern = "xn--xhq02y0gz4ebvbj98t.gay", custom_domain = true },
+  { pattern = "91.xn--xhq02y0gz4ebvbj98t.gay", custom_domain = true },
+]

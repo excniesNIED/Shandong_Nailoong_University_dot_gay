@@ -1,0 +1,13 @@
+{
+  "name": "mama-ascii",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "login": "wrangler login"
+  },
+  "devDependencies": {
+    "wrangler": "^4.60.0"
+  }
+}

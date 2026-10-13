@@ -179,7 +179,7 @@ def main() -> None:
     p.add_argument(
         "--out",
         type=Path,
-        default=Path("src/mama_art.txt"),
+        default=Path("worker/mama_art.txt"),
     )
     args = p.parse_args()
 

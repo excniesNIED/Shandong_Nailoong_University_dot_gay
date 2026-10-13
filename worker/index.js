@@ -26,13 +26,11 @@ const MAMA_ART = `      妈                                        妈
 妈妈妈                    妈妈妈妈        妈妈                      妈妈妈
 妈                        妈妈                                      妈妈`;
 
-const REDIRECT_URL = "https://www.sdnu.edu.cn";
-
 const BROWSER_UA =
   /Mozilla|Chrome|Safari|Firefox|Edg|OPR|Opera|MSIE|Trident|AppleWebKit|Gecko/i;
 
 /**
- * Browser direct visit → redirect.
+ * Browser visit → frontend.
  * curl / wget / nc-style clients → plain-text ASCII art.
  */
 function isBrowser(request) {
@@ -63,6 +61,10 @@ function isBrowser(request) {
   return false;
 }
 
+/**
+ * Only `/78` and `/78/` reach this script (`assets.run_worker_first` in
+ * wrangler.toml); every other path is served from the built frontend.
+ */
 export default {
   async fetch(request) {
     if (request.method === "OPTIONS") {
@@ -84,28 +86,19 @@ export default {
       });
     }
 
-    // Browser always → 山师官网
+    // Browser → frontend home page
     if (isBrowser(request)) {
-      return Response.redirect(REDIRECT_URL, 302);
+      return Response.redirect(new URL("/", request.url).toString(), 302);
     }
 
-    const path = new URL(request.url).pathname.replace(/\/+$/, "") || "/";
     // curl https://91.sbnu.gay/78
-    if (path === "/78") {
-      const body = request.method === "HEAD" ? null : MAMA_ART + "\n";
-      return new Response(body, {
-        status: 200,
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "no-store",
-          "X-Content-Type-Options": "nosniff",
-        },
-      });
-    }
-    return new Response("Not Found\n", {
-      status: 404,
+    const body = request.method === "HEAD" ? null : MAMA_ART + "\n";
+    return new Response(body, {
+      status: 200,
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff",
       },
     });
   },

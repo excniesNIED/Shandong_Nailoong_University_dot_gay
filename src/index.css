@@ -1,0 +1,191 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-serif: "Noto Serif SC", "Source Han Serif SC", SimSun, STSong, serif;
+  --font-sans: "Outfit", system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  --color-sdnu-navy: #153e75;
+  --color-sdnu-deep: #0c274d;
+  --color-sdnu-red: #c8282e;
+  --color-nailong-yellow: #ffca28;
+  --color-nailong-darkyellow: #f59e0b;
+  --color-nailong-glow: #ffe57f;
+  --color-campus-parchment: #faf7f0;
+  --color-campus-card: #fffdf9;
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: #faf7f0;
+  --foreground: #1e293b;
+  --card: #fffdf9;
+  --card-foreground: #1e293b;
+  --popover: #fffdf9;
+  --popover-foreground: #0c274d;
+  --primary: #153e75;
+  --primary-foreground: #ffffff;
+  --secondary: #fef3c7;
+  --secondary-foreground: #78350f;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #f8fafc;
+  --accent-foreground: #0c274d;
+  --destructive: #dc2626;
+  --border: #e2e8f0;
+  --input: #cbd5e1;
+  --ring: #f59e0b;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(at 0% 0%, rgba(255, 202, 40, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(21, 62, 117, 0.06) 0px, transparent 50%),
+      radial-gradient(circle at 50% 30%, rgba(255, 230, 130, 0.12) 0px, transparent 60%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+/* Vintage diploma frame */
+.diploma-border {
+  box-shadow:
+    inset 0 0 0 1px rgba(21, 62, 117, 0.12),
+    inset 0 0 0 5px rgba(250, 247, 240, 1),
+    inset 0 0 0 6px rgba(21, 62, 117, 0.08);
+}
+
+/* Hand-drawn highlighter behind 奶龙 */
+.nailong-highlighter {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+.nailong-highlighter::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: 6px;
+  height: 38%;
+  background: linear-gradient(100deg, #fde68a 0%, #fbbf24 85%, #f59e0b 100%);
+  border-radius: 4px;
+  z-index: -1;
+  transform: rotate(-1deg) skewX(-4deg);
+  opacity: 0.85;
+  box-shadow: 0 2px 10px rgba(251, 191, 36, 0.35);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nailong-highlighter:hover::before {
+  transform: rotate(0deg) scale(1.08, 1.2);
+  opacity: 0.95;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 40s linear infinite;
+}
+.animate-spin-reverse {
+  animation: spin-slow 50s linear infinite reverse;
+}
+
+@keyframes nailong-breathe {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.03, 0.98) translateY(-2px);
+  }
+}
+.animate-nailong {
+  animation: nailong-breathe 3.6s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.wobble-active {
+  animation: wobble 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+}
+@keyframes wobble {
+  10%,
+  90% {
+    transform: translate3d(-2px, 0, 0) scale(1.06, 0.94);
+  }
+  20%,
+  80% {
+    transform: translate3d(4px, 0, 0) scale(0.96, 1.05);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-5px, 0, 0) scale(1.04, 0.96);
+  }
+  40%,
+  60% {
+    transform: translate3d(5px, 0, 0) scale(0.98, 1.02);
+  }
+}
+
+@keyframes float-particle {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-12px) rotate(25deg);
+    opacity: 0.9;
+  }
+}
+.float-item-1 {
+  animation: float-particle 4s ease-in-out infinite;
+}
+.float-item-2 {
+  animation: float-particle 5.2s ease-in-out infinite 1.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-slow,
+  .animate-spin-reverse,
+  .animate-nailong,
+  .float-item-1,
+  .float-item-2 {
+    animation: none;
+  }
+}

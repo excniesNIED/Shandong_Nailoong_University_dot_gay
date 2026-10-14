@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc -b",
-    "preview": "pnpm build && wrangler dev",
-    "deploy": "pnpm build && wrangler deploy",
+    "preview": "pnpm build && wrangler pages dev dist",
+    "deploy": "pnpm build && wrangler pages deploy",
     "login": "wrangler login"
   },
   "dependencies": {

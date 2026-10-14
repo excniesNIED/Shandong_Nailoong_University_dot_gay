@@ -51,7 +51,7 @@ function track(src: string, volume = 0.7) {
  * Sound effects entry point.
  * - "click": weighted-random mp3 from /1–6.mp3, fired on interactive clicks.
  * - "chime": short synth confirmation for copy feedback.
- * - "reload": fixed /1.mp3 cue for the 重新载入动画 replay loader.
+ * - "reload": fixed /1.mp3 cue for the corner 重新载入动画 replay button.
  * All are decoration; every failure path stays silent.
  */
 export function playSound(kind: "click" | "chime" | "reload") {

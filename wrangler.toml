@@ -1,17 +1,7 @@
-name = "mama-ascii"
-main = "worker/index.js"
-compatibility_date = "2026-07-17"
-account_id = "547b4478f0399f2b115bf5dbec31f12e"
-
 # 山东奶龙大学.gay = xn--xhq02y0gz4ebvbj98t.gay (IDN zone, API uses punycode)
-routes = [
-  { pattern = "xn--xhq02y0gz4ebvbj98t.gay", custom_domain = true },
-  { pattern = "91.xn--xhq02y0gz4ebvbj98t.gay", custom_domain = true },
-]
-
-# Frontend (vite build → dist). Only /78 runs the Worker (ASCII for CLI clients);
-# everything else is served as static assets with SPA fallback.
-[assets]
-directory = "./dist"
-not_found_handling = "single-page-application"
-run_worker_first = ["/78", "/78/"]
+# Cloudflare Pages + file-based Functions (functions/). Custom domains are
+# attached in the Cloudflare dashboard (xn--xhq02y0gz4ebvbj98t.gay and
+# 91.xn--xhq02y0gz4ebvbj98t.gay).
+name = "mama-ascii"
+compatibility_date = "2026-07-17"
+pages_build_output_dir = "./dist"

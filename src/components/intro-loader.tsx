@@ -74,7 +74,7 @@ export function IntroLoader({ onReveal, onDone }: IntroLoaderProps) {
         <NailongFigure id="loader" strokeColor="#153e75" strokeWidth={0.075} />
       </svg>
       <p data-caption className="mt-6 font-serif text-lg font-bold tracking-[0.3em] text-sdnu-navy sm:text-xl dark:text-amber-300">
-        {Array.from("山东奶龙大学").map((ch, i) => (
+        {Array.from("欢迎来到山东奶龙大学").map((ch, i) => (
           <span key={i} className="inline-block">
             {ch}
           </span>

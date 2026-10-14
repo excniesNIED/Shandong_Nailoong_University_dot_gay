@@ -143,6 +143,12 @@
   }
 }
 
+/* Opt out of Chrome Auto Dark Theme (强制深色/extension): the easter-egg
+   terminal and code block must stay dark, never get inverted. */
+.no-auto-dark {
+  color-scheme: only light;
+}
+
 /* Vintage diploma frame */
 .diploma-border {
   box-shadow:

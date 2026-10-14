@@ -3,9 +3,40 @@
 
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
+/* Self-hosted, usage-subset woff2 (public/fonts/). Latin from Alice/Geom,
+   CJK falls through to 郑庆科南北词宫谱宋体 / 爱点风雅黑长体. */
+@font-face {
+  font-family: "Alice";
+  src: url("/fonts/Alice-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/Geom-Variable.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "郑庆科南北词宫谱宋体";
+  src: url("/fonts/NanBeiCiGongSerif.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "爱点风雅黑长体";
+  src: url("/fonts/AiDianFengYaHei.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-serif: "Noto Serif SC", "Source Han Serif SC", SimSun, STSong, serif;
-  --font-sans: "Outfit", system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-serif: "Alice", "郑庆科南北词宫谱宋体", "Source Han Serif SC", SimSun, STSong, serif;
+  --font-sans: "Geom", "爱点风雅黑长体", system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
 
   --color-sdnu-navy: #153e75;
   --color-sdnu-deep: #0c274d;

@@ -153,8 +153,13 @@ function Home() {
           <span className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-sdnu-navy/20 transition group-hover:ring-amber-400 sm:h-10 sm:w-10 dark:bg-slate-900">
             <img src="/nailoog.webp" alt="山东奶龙大学校徽" width={40} height={40} className="h-full w-full" />
           </span>
-          <span className="font-serif text-base font-bold tracking-wide text-sdnu-navy transition group-hover:text-amber-600 sm:text-lg dark:text-slate-100 dark:group-hover:text-amber-400">
-            山东奶龙大学
+          <span className="flex flex-col items-start leading-none">
+            <span className="font-serif text-lg font-bold tracking-wide text-sdnu-navy transition group-hover:text-amber-600 sm:text-xl dark:text-slate-100 dark:group-hover:text-amber-400">
+              山东奶龙大学
+            </span>
+            <span className="mt-1 font-serif text-[8px] tracking-[-0.01em] text-sdnu-navy/70 sm:text-[9px] dark:text-slate-400">
+              Shandong Nailoong University
+            </span>
           </span>
         </button>
         <div className="rounded-full border border-sdnu-navy/20 bg-white/70 px-3 py-1 font-sans text-xs tracking-widest text-sdnu-navy/80 uppercase shadow-xs backdrop-blur-sm dark:border-slate-600/60 dark:bg-white/10 dark:text-slate-200">
@@ -194,13 +199,14 @@ function Home() {
           「{QUOTES[quote]}」
         </p>
 
-        <p data-enter className="mt-3 mb-1 font-sans text-xs font-semibold tracking-[0.28em] text-slate-500 uppercase sm:text-sm dark:text-slate-400">
-          Shandong Nailoong University
-        </p>
-
-        <h1 data-enter className="mt-1 mb-4 font-serif text-4xl leading-tight font-black tracking-tight text-sdnu-navy sm:text-5xl md:text-6xl dark:text-slate-50">
-          山东<span className="nailong-highlighter mx-1 text-sdnu-navy dark:text-slate-50">奶龙</span>大学
-        </h1>
+        <div data-enter className="mt-1 mb-4 text-center font-serif text-5xl leading-tight sm:text-6xl md:text-7xl">
+          <h1 className="font-black tracking-tight text-sdnu-navy dark:text-slate-50">
+            山东<span className="nailong-highlighter mx-1 text-sdnu-navy dark:text-slate-50">奶龙</span>大学
+          </h1>
+          <p className="mt-2 text-[0.4em] font-normal tracking-[0.057em] text-sdnu-navy/70 sm:mt-3 dark:text-slate-400">
+            Shandong Nailoong University
+          </p>
+        </div>
 
         <p data-enter className="mx-auto flex max-w-lg items-center justify-center space-x-1.5 font-serif text-base text-slate-600 sm:text-lg dark:text-slate-300">
           <span>奶龙已就位，在千佛山与长清湖为山师人护学。</span>
@@ -318,9 +324,6 @@ function Home() {
                   </p>
                   <p>
                     <strong>山东师范大学</strong>坐落在历史文化名城济南，办学文脉可追溯到 1902 年山东大学堂师范馆，1950 年组建山东师范学院，1981 年更名为山东师范大学。学校秉承“尊贤尚功、奋发有为”的校园精神和“弘德明志、博学笃行”的校训，拥有千佛山、长清湖两个校区，现有 25 个学院（部）、64 个招生本科专业，是山东省人民政府和教育部共建高校、山东省高水平大学“冲一流”建设高校。
-                  </p>
-                  <p>
-                    奶龙每天准时上岗护学；点击校徽上的奶龙可以换一句山师语录。用终端访问 <code className="rounded bg-slate-100 px-1 font-mono text-[11px] dark:bg-slate-700">/78</code> 还有彩蛋。
                   </p>
                   <div className="rounded-lg border border-amber-200/60 bg-amber-50/70 p-3 text-xs text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
                     💡 <strong>免责声明：</strong>本站为山东师范大学奶龙官方组织（学生自发整活组织），与山东师范大学官方无隶属关系。“前往山师官网”直达 sdnu.edu.cn。

@@ -5,7 +5,7 @@ import { createRouter, RouterProvider } from "@tanstack/react-router"
 import { routeTree } from "./routeTree.gen"
 import "./index.css"
 
-const router = createRouter({ routeTree, defaultPreload: "intent" })
+const router = createRouter({ routeTree, defaultPreload: "intent", defaultViewTransition: true })
 
 declare module "@tanstack/react-router" {
   interface Register {

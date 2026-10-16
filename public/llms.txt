@@ -21,6 +21,8 @@
 ## 本站
 
 - [首页](https://xn--xhq02y0gz4ebvbj98t.gay/): 奶龙校徽、奶龙护学动画、点击更换山师语录、官方群入口
+- [关于本站](https://xn--xhq02y0gz4ebvbj98t.gay/about): 山东奶龙大学与山东师范大学介绍、特级护学/山师语录/前身今世/奶家军四个区域、免责声明
+- [奶家军](https://xn--xhq02y0gz4ebvbj98t.gay/nailoog): 奶群和奶站合集（NaiList、奶龙大学排行榜、奶龙中心、奶龙随机跳转）与奶龙小游戏大全导航
 - [终端彩蛋](https://xn--xhq02y0gz4ebvbj98t.gay/78): 用 `curl https://91.xn--xhq02y0gz4ebvbj98t.gay/78` 获取纯文本 ASCII 艺术；浏览器访问时显示前端页面
 - 山东奶龙大学官方群：QQ 641370366，加群链接 https://qm.qq.com/q/t9uMBMK3SM
 - 山东师范大学官网：https://www.sdnu.edu.cn

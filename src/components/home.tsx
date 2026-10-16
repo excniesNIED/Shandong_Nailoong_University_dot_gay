@@ -3,79 +3,38 @@ import { gsap } from "gsap"
 import { Copy, Play, RotateCw, Users } from "lucide-react"
 import { toast } from "sonner"
 
-import { Emblem } from "@/components/emblem"
+import { InteractiveEmblem } from "@/components/interactive-emblem"
 import { IntroLoader } from "@/components/intro-loader"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { QUOTES } from "@/lib/quotes"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { playSound } from "@/lib/sound"
 
 const QQ_GROUP = "641370366"
 const QQ_JOIN_URL = "https://qm.qq.com/q/t9uMBMK3SM"
 const OFFICIAL_URL = "https://www.sdnu.edu.cn"
-const SPARKLES = ["✨", "💛", "🌟", "🥟"]
 
-function burstSparkles(x: number, y: number) {
-  for (let i = 0; i < 4; i++) {
-    const p = document.createElement("div")
-    p.textContent = SPARKLES[Math.floor(Math.random() * SPARKLES.length)]
-    p.className = "pointer-events-none fixed z-50 select-none text-base"
-    p.style.left = `${x - 10}px`
-    p.style.top = `${y - 10}px`
-    document.body.appendChild(p)
-    const angle = Math.random() * Math.PI * 2
-    const dist = 30 + Math.random() * 50
-    gsap.to(p, {
-      x: Math.cos(angle) * dist,
-      y: Math.sin(angle) * dist - 25,
-      scale: 0.4,
-      opacity: 0,
-      duration: 0.7,
-      ease: "power2.out",
-      onComplete: () => p.remove(),
-    })
-  }
-}
+// Intro plays only on a real document load of the homepage (refresh); tab
+// navigation back to 主页 must not replay it. Reset per document load.
+let introPlayed = false
 
 /** Full homepage UI, shared by the "/" route and the "/78" easter-egg route. */
 export function Home() {
   const [loaderKey, setLoaderKey] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [quote, setQuote] = useState(0)
+  const [loading, setLoading] = useState(
+    () => !introPlayed && (window.location.pathname === "/" || window.location.pathname === "/78"),
+  )
   const [copied, setCopied] = useState(false)
   const [anthemOpen, setAnthemOpen] = useState(false)
-  const [stats, setStats] = useState<{ today: number; total: number; online: number } | null>(null)
   const emblemRef = useRef<HTMLButtonElement>(null)
-  const avatarRef = useRef<SVGGElement>(null)
   const pageRef = useRef<HTMLDivElement>(null)
 
-  // Hidden until the loader hands over; StrictMode-safe because it is a plain set.
+  // Hidden until the loader hands over; skipped entirely when the intro is
+  // suppressed (tab navigation back to an already-introed document).
   useEffect(() => {
+    if (!loading) return
     gsap.set(emblemRef.current, { scale: 0.3, rotate: -30, opacity: 0 })
     gsap.set(pageRef.current?.querySelectorAll("[data-enter]") ?? [], { opacity: 0, y: 16 })
-  }, [loaderKey])
-
-  // Visitor counters; silent on failure — decoration only.
-  useEffect(() => {
-    fetch("/api/traffic", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((d) => {
-        const values = [d?.today?.pageviews, d?.total?.pageviews, d?.online]
-        if (values.every((n) => Number.isSafeInteger(n) && n >= 0)) {
-          setStats({ today: d.today.pageviews, total: d.total.pageviews, online: d.online })
-        }
-      })
-      .catch(() => {})
-  }, [])
+  }, [loading, loaderKey])
 
   const _0x4e2f = useCallback(() => {
     const _0x8a1b = emblemRef.current
@@ -92,21 +51,6 @@ export function Home() {
     setLoaderKey((k) => k + 1)
   }
 
-  const nextQuote = (e: React.MouseEvent) => {
-    playSound("click")
-    burstSparkles(e.clientX, e.clientY)
-    setQuote((q) => (q + 1 + Math.floor(Math.random() * (QUOTES.length - 1))) % QUOTES.length)
-    const avatar = avatarRef.current
-    if (!avatar) return
-    avatar.classList.remove("animate-nailong", "wobble-active")
-    void avatar.getBoundingClientRect()
-    avatar.classList.add("wobble-active")
-    window.setTimeout(() => {
-      avatar.classList.remove("wobble-active")
-      avatar.classList.add("animate-nailong")
-    }, 700)
-  }
-
   const copyGroup = async () => {
     try {
       await navigator.clipboard.writeText(QQ_GROUP)
@@ -120,85 +64,23 @@ export function Home() {
   }
 
   return (
-    <div ref={pageRef} className="relative flex min-h-screen flex-col justify-between text-slate-800 selection:bg-amber-300 selection:text-sdnu-deep dark:text-slate-200">
+    <div ref={pageRef} className="relative flex flex-1 flex-col">
       {loading && (
-        <IntroLoader key={loaderKey} onReveal={_0x4e2f} onDone={() => setLoading(false)} />
+        <IntroLoader
+          key={loaderKey}
+          onReveal={_0x4e2f}
+          onDone={() => {
+            introPlayed = true
+            setLoading(false)
+          }}
+        />
       )}
 
-      <div className="pointer-events-none fixed inset-2 z-30 diploma-border md:inset-4" />
-
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-amber-200/20 blur-3xl" />
-        <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-blue-300/15 blur-3xl" />
-        <svg className="float-item-1 absolute top-28 left-[18%] h-5 w-5 text-amber-400 opacity-60" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2l2.4 7.2h7.6l-6.1 4.5 2.3 7.3-6.2-4.6-6.2 4.6 2.3-7.3-6.1-4.5h7.6z" />
-        </svg>
-        <svg className="float-item-2 absolute top-44 right-[20%] h-6 w-6 text-sdnu-navy/30 opacity-50" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 0l3 9h9l-7.5 5.5 3 9.5-7.5-5.5-7.5 5.5 3-9.5-7.5-5.5h9z" />
-        </svg>
-      </div>
-
-      <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-6 pt-7 sm:pt-9">
-        <button
-          type="button"
-          onClick={(e) => {
-            burstSparkles(e.clientX, e.clientY)
-            playSound("click")
-            toast("山东奶龙大学欢迎你！", { icon: "🐲" })
-          }}
-          className="group flex cursor-pointer items-center space-x-3 transition-transform hover:scale-[1.02]"
-        >
-          <span className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-sdnu-navy/20 transition group-hover:ring-amber-400 sm:h-10 sm:w-10 dark:bg-slate-900">
-            <img src="/nailoog.webp" alt="山东奶龙大学校徽" width={40} height={40} className="h-full w-full" />
-          </span>
-          <span className="flex flex-col items-start leading-none">
-            <span className="font-serif text-lg font-bold tracking-wide text-sdnu-navy transition group-hover:text-amber-600 sm:text-xl dark:text-slate-100 dark:group-hover:text-amber-400">
-              山东奶龙大学
-            </span>
-            <span className="mt-1 font-serif text-[8px] tracking-[-0.01em] text-sdnu-navy/70 sm:text-[9px] dark:text-slate-400">
-              Shandong Nailoong University
-            </span>
-          </span>
-        </button>
-        <div className="rounded-full border border-sdnu-navy/20 bg-white/70 px-3 py-1 font-sans text-xs tracking-widest text-sdnu-navy/80 uppercase shadow-xs backdrop-blur-sm dark:border-slate-600/60 dark:bg-white/10 dark:text-slate-200">
-          SDNU 1950
-        </div>
-      </header>
-
       <main className="relative z-10 mx-auto flex max-w-4xl flex-1 flex-col items-center justify-center px-4 py-6 text-center sm:py-10">
-        <div className="group relative my-3 select-none sm:my-5">
-          <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-amber-300/25 via-yellow-200/15 to-blue-300/20 opacity-70 blur-2xl transition-opacity duration-700 group-hover:opacity-100" />
-          <div className="animate-spin-slow pointer-events-none absolute -inset-4 rounded-full border border-dashed border-sdnu-navy/25 sm:-inset-6 dark:border-slate-400/30" />
-          <div className="animate-spin-reverse pointer-events-none absolute -inset-4 sm:-inset-6">
-            <span className="absolute top-0 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sdnu-navy shadow-md ring-4 ring-amber-300 dark:bg-amber-400" />
-          </div>
-
-          <button
-            ref={emblemRef}
-            type="button"
-            onClick={nextQuote}
-            className="relative block cursor-pointer rounded-full transition-[filter] hover:brightness-[1.02]"
-            title="点击奶龙，换一句山师语录"
-            aria-label="点击更换山师语录"
-          >
-            <Emblem avatarRef={avatarRef} />
-          </button>
-
-          <div className="pointer-events-none absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-amber-400 px-2.5 py-0.5 text-[11px] font-bold whitespace-nowrap text-sdnu-deep opacity-90 shadow-md">
-            ✨ 点我换语录
-          </div>
-        </div>
-
-        <p
-          data-enter
-          aria-live="polite"
-          className="mt-6 min-h-[1.75rem] max-w-md font-serif text-sm text-amber-800 sm:text-base dark:text-amber-300"
-        >
-          「{QUOTES[quote]}」
-        </p>
+        <InteractiveEmblem emblemRef={emblemRef} />
 
         <div data-enter className="mt-1 mb-4 text-center font-serif text-5xl leading-tight sm:text-6xl md:text-7xl">
-          <h1 className="font-black tracking-tight text-sdnu-navy dark:text-slate-50">
+          <h1 className="hero-title font-black tracking-tight text-sdnu-navy dark:text-slate-50">
             山东<span className="nailong-highlighter mx-1 text-sdnu-navy dark:text-slate-50">奶龙</span>大学
           </h1>
           <p className="mt-2 text-[0.4em] font-normal tracking-[0.057em] text-sdnu-navy/70 sm:mt-3 dark:text-slate-400">
@@ -228,16 +110,50 @@ export function Home() {
           </span>
         </div>
 
-        <div data-enter className="flex w-full max-w-md flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-          <Button
-            asChild
-            className="group h-auto w-full rounded-full bg-sdnu-navy px-8 py-3.5 text-sm tracking-wide text-white shadow-lg shadow-sdnu-navy/25 hover:bg-sdnu-deep hover:shadow-xl hover:shadow-sdnu-navy/35 sm:w-auto sm:text-base"
+        <div data-enter className="flex w-full max-w-md flex-col items-center justify-center gap-5 sm:flex-row sm:gap-4">
+          <a
+            href={OFFICIAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative z-10 w-full overflow-hidden rounded-full bg-gradient-to-r from-red-500 to-orange-500 px-10 py-3 text-center font-serif text-sm uppercase tracking-widest text-transparent shadow-xl shadow-red-600 cursor-pointer transition-[filter,box-shadow] after:absolute after:rounded-full after:bg-red-200 after:h-[85%] after:w-[95%] after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 hover:saturate-[1.15] hover:shadow-2xl hover:shadow-red-600 active:saturate-[1.4] sm:w-auto sm:text-base"
           >
-            <a href={OFFICIAL_URL} target="_blank" rel="noopener noreferrer">
+            前往学校官网
+            <p className="absolute z-40 font-semibold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent top-1/2 left-1/2 -translate-x-1/2 group-hover:-translate-y-full h-full w-full transition-all duration-300 -translate-y-[30%] tracking-widest">
               前往学校官网
-              <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-            </a>
-          </Button>
+            </p>
+            <p className="absolute z-40 top-1/2 left-1/2 bg-gradient-to-r from-red-700 to-orange-700 bg-clip-text text-transparent -translate-x-1/2 translate-y-full h-full w-full transition-all duration-300 group-hover:-translate-y-[40%] tracking-widest font-extrabold">
+              立即访问
+            </p>
+            <svg
+              className="absolute w-full h-full scale-x-125 rotate-180 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 group-hover:-translate-y-[45%] transition-all duration-300"
+              viewBox="0 0 2400 800"
+              preserveAspectRatio="none"
+              version="1.1"
+            >
+              <defs>
+                <linearGradient id="sssurf-grad" y2="100%" x2="50%" y1="0%" x1="50%">
+                  <stop offset="0%" stopOpacity={1} stopColor="hsl(37, 99%, 67%)" />
+                  <stop offset="100%" stopOpacity={1} stopColor="hsl(316, 73%, 52%)" />
+                </linearGradient>
+              </defs>
+              <g transform="matrix(1,0,0,1,0,-91.0877685546875)" fill="url(#sssurf-grad)">
+                <path opacity="0.05" transform="matrix(1,0,0,1,0,35)" d="M 0 305.9828838196134 Q 227.6031525693441 450 600 302.17553022897005 Q 1010.7738828515054 450 1200 343.3024459932802 Q 1379.4406250195766 450 1800 320.38902780838214 Q 2153.573162029817 450 2400 314.38564046970816 L 2400 800 L 0 800 L 0 340.3112176762882 Z" />
+                <path opacity="0.21" transform="matrix(1,0,0,1,0,70)" d="M 0 305.9828838196134 Q 227.6031525693441 450 600 302.17553022897005 Q 1010.7738828515054 450 1200 343.3024459932802 Q 1379.4406250195766 450 1800 320.38902780838214 Q 2153.573162029817 450 2400 314.38564046970816 L 2400 800 L 0 800 L 0 340.3112176762882 Z" />
+                <path opacity="0.37" transform="matrix(1,0,0,1,0,105)" d="M 0 305.9828838196134 Q 227.6031525693441 450 600 302.17553022897005 Q 1010.7738828515054 450 1200 343.3024459932802 Q 1379.4406250195766 450 1800 320.38902780838214 Q 2153.573162029817 450 2400 314.38564046970816 L 2400 800 L 0 800 L 0 340.3112176762882 Z" />
+                <path opacity="0.53" transform="matrix(1,0,0,1,0,140)" d="M 0 305.9828838196134 Q 227.6031525693441 450 600 302.17553022897005 Q 1010.7738828515054 450 1200 343.3024459932802 Q 1379.4406250195766 450 1800 320.38902780838214 Q 2153.573162029817 450 2400 314.38564046970816 L 2400 800 L 0 800 L 0 340.3112176762882 Z" />
+                <path opacity="0.68" transform="matrix(1,0,0,1,0,175)" d="M 0 305.9828838196134 Q 227.6031525693441 450 600 302.17553022897005 Q 1010.7738828515054 450 1200 343.3024459932802 Q 1379.4406250195766 450 1800 320.38902780838214 Q 2153.573162029817 450 2400 314.38564046970816 L 2400 800 L 0 800 L 0 340.3112176762882 Z" />
+                <path opacity="0.84" transform="matrix(1,0,0,1,0,210)" d="M 0 305.9828838196134 Q 227.6031525693441 450 600 302.17553022897005 Q 1010.7738828515054 450 1200 343.3024459932802 Q 1379.4406250195766 450 1800 320.38902780838214 Q 2153.573162029817 450 2400 314.38564046970816 L 2400 800 L 0 800 L 0 340.3112176762882 Z" />
+                <path opacity={1} transform="matrix(1,0,0,1,0,245)" d="M 0 305.9828838196134 Q 227.6031525693441 450 600 302.17553022897005 Q 1010.7738828515054 450 1200 343.3024459932802 Q 1379.4406250195766 450 1800 320.38902780838214 Q 2153.573162029817 450 2400 314.38564046970816 L 2400 800 L 0 800 L 0 340.3112176762882 Z" />
+              </g>
+            </svg>
+            <svg
+              className="absolute w-full h-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-[30%] group-hover:-translate-y-[33%] group-hover:scale-95 transition-all duration-500 z-40 fill-red-500"
+              viewBox="0 0 1440 320"
+              preserveAspectRatio="none"
+            >
+              <path d="M0,288L9.2,250.7C18.5,213,37,139,55,133.3C73.8,128,92,192,111,224C129.2,256,148,256,166,256C184.6,256,203,256,222,250.7C240,245,258,235,277,213.3C295.4,192,314,160,332,170.7C350.8,181,369,235,388,229.3C406.2,224,425,160,443,122.7C461.5,85,480,75,498,74.7C516.9,75,535,85,554,101.3C572.3,117,591,139,609,170.7C627.7,203,646,245,665,256C683.1,267,702,245,720,245.3C738.5,245,757,267,775,266.7C793.8,267,812,245,831,234.7C849.2,224,868,224,886,218.7C904.6,213,923,203,942,170.7C960,139,978,85,997,53.3C1015.4,21,1034,11,1052,48C1070.8,85,1089,171,1108,197.3C1126.2,224,1145,192,1163,197.3C1181.5,203,1200,245,1218,224C1236.9,203,1255,117,1274,106.7C1292.3,96,1311,160,1329,170.7C1347.7,181,1366,139,1385,128C1403.1,117,1422,139,1431,149.3L1440,160L1440,320L1430.8,320C1421.5,320,1403,320,1385,320C1366.2,320,1348,320,1329,320C1310.8,320,1292,320,1274,320C1255.4,320,1237,320,1218,320C1200,320,1182,320,1163,320C1144.6,320,1126,320,1108,320C1089.2,320,1071,320,1052,320C1033.8,320,1015,320,997,320C978.5,320,960,320,942,320C923.1,320,905,320,886,320C867.7,320,849,320,831,320C812.3,320,794,320,775,320C756.9,320,738,320,720,320C701.5,320,683,320,665,320C646.2,320,628,320,609,320C590.8,320,572,320,554,320C535.4,320,517,320,498,320C480,320,462,320,443,320C424.6,320,406,320,388,320C369.2,320,351,320,332,320C313.8,320,295,320,277,320C258.5,320,240,320,222,320C203.1,320,185,320,166,320C147.7,320,129,320,111,320C92.3,320,74,320,55,320C36.9,320,18,320,9,320L0,320Z" fillOpacity={1} />
+            </svg>
+          </a>
           <Button
             variant="outline"
             onClick={() => setAnthemOpen(true)}
@@ -248,9 +164,9 @@ export function Home() {
           </Button>
         </div>
 
-        <div data-enter className="mt-8 flex flex-col items-center justify-center gap-2 text-sm text-slate-500 sm:flex-row dark:text-slate-400">
+        <div data-enter className="mt-8 flex w-full max-w-md flex-col items-center justify-center gap-2 text-sm text-slate-500 sm:w-auto sm:flex-row dark:text-slate-400">
           <span>山东奶龙大学官方群：</span>
-          <div className="inline-flex items-center gap-3 rounded-full border border-slate-200/90 bg-white/80 px-4 py-2 shadow-xs backdrop-blur-xs dark:border-slate-600/70 dark:bg-slate-800/80">
+          <div className="inline-flex w-full max-w-md items-center justify-center gap-3 rounded-full border border-slate-200/90 bg-white/80 px-4 py-2 shadow-xs backdrop-blur-xs sm:w-auto dark:border-slate-600/70 dark:bg-slate-800/80">
             <span className="font-sans text-base font-semibold tracking-wider text-slate-800 dark:text-slate-200">{QQ_GROUP}</span>
             <button
               type="button"
@@ -273,70 +189,6 @@ export function Home() {
           </div>
         </div>
       </main>
-
-      <footer className="relative z-10 mx-auto mt-auto w-full max-w-6xl border-t border-slate-200/60 px-6 pt-6 pb-14 text-center font-sans text-[11px] text-slate-400 dark:border-slate-700/60 dark:text-slate-500">
-        <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
-          <p>© 1950 - 2026 山东奶龙大学 · 弘德明志 博学笃行</p>
-          {stats && (
-            <p className="flex items-center gap-1.5 tabular-nums" aria-label="站点访问统计">
-              <span>
-                今日浏览 <span className="font-semibold text-slate-500 dark:text-slate-300">{stats.today}</span>
-              </span>
-              <span className="text-slate-300 dark:text-slate-600">|</span>
-              <span>
-                总浏览 <span className="font-semibold text-slate-500 dark:text-slate-300">{stats.total}</span>
-              </span>
-              <span className="text-slate-300 dark:text-slate-600">|</span>
-              <span>
-                在线 <span className="font-semibold text-emerald-600 dark:text-emerald-400">{stats.online}</span>
-              </span>
-            </p>
-          )}
-          <p className="flex items-center gap-1">
-            <a
-              href="https://nai.amoe.cc/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-0.5 font-medium transition hover:text-sdnu-navy hover:underline underline-offset-4 dark:hover:text-amber-300"
-            >
-              更多奶群和奶站
-            </a>
-            ·
-            <Dialog>
-              <DialogTrigger asChild>
-                <button type="button" className="inline-flex cursor-pointer items-center gap-0.5 font-medium underline-offset-4 transition hover:text-sdnu-navy hover:underline dark:hover:text-amber-300">
-                  第一次来？先看看关于本站
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-h-[85vh] overflow-y-auto rounded-2xl border-amber-100 bg-white sm:max-w-md dark:border-slate-700 dark:bg-card">
-                <DialogHeader className="flex-row items-center gap-3 space-y-0 text-left">
-                  <img src="/nailoog.webp" alt="" width={40} height={40} className="size-10 rounded-xl" />
-                  <div>
-                    <DialogTitle className="font-serif text-lg text-sdnu-navy dark:text-slate-100">关于山东奶龙大学</DialogTitle>
-                    <DialogDescription className="font-sans text-xs">Nailong × Shandong Normal University</DialogDescription>
-                  </div>
-                </DialogHeader>
-                <div className="space-y-3 border-y border-slate-100 py-3 text-left font-serif text-xs leading-relaxed text-slate-600 sm:text-sm dark:border-slate-800 dark:text-slate-300">
-                  <p>
-                    <strong>山东奶龙大学</strong>（Shandong Nailoong University，简称 SDNU），又称山东奶蛙大学（Shandong Milkyfrog University）、山东乃万大学（Shandong Nine-One University），坐落于山东省济南市，对外全称“山东师范大学奶龙官方组织”，是山师学子与萌系顶流“奶龙”的一次梦幻联动：活泼乐观、大肚能容，从容面对教资、考研与期末周。
-                  </p>
-                  <p>
-                    <strong>山东师范大学</strong>坐落在历史文化名城济南，办学文脉可追溯到 1902 年山东大学堂师范馆，1950 年组建山东师范学院，1981 年更名为山东师范大学。学校秉承“尊贤尚功、奋发有为”的校园精神和“弘德明志、博学笃行”的校训，拥有千佛山、长清湖两个校区，现有 25 个学院（部）、64 个招生本科专业，是山东省人民政府和教育部共建高校、山东省高水平大学“冲一流”建设高校。
-                  </p>
-                  <div className="rounded-lg border border-amber-200/60 bg-amber-50/70 p-3 text-xs text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-                    💡 <strong>免责声明：</strong>本站为山东师范大学奶龙官方组织（学生自发整活组织），与山东师范大学官方无隶属关系。“前往山师官网”直达 sdnu.edu.cn。
-                  </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button className="rounded-full bg-sdnu-navy px-5 text-xs hover:bg-sdnu-deep">朕已知晓，退下吧</Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </p>
-        </div>
-      </footer>
 
       <button
         type="button"

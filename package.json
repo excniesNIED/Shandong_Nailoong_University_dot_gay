@@ -11,6 +11,7 @@
     "login": "wrangler login"
   },
   "dependencies": {
+    "@base-ui/react": "^1.9.0",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/react-router": "^1.170.44",
     "class-variance-authority": "^0.7.1",

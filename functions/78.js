@@ -74,14 +74,14 @@ function artResponse(request) {
 }
 
 /**
- * GET /78: browsers get the SPA served in place (env.ASSETS keeps the URL on
- * /78 so the client router matches it and Umami records a /78 pageview — a
- * redirect would rewrite the URL to "/" and lose the easter egg); CLI clients
- * get the ASCII art.
+ * GET /78: browsers get the prerendered /78 page served in place (env.ASSETS
+ * keeps the URL on /78 so the client router matches it and Umami records a
+ * /78 pageview — a redirect would rewrite the URL to "/" and lose the easter
+ * egg); CLI clients get the ASCII art.
  */
 export async function onRequestGet({ request, env }) {
   if (isBrowser(request)) {
-    return env.ASSETS.fetch(new URL("/", request.url));
+    return env.ASSETS.fetch(new URL("/78.html", request.url));
   }
   return artResponse(request);
 }

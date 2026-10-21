@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Check, Copy, RotateCw, SquareTerminal } from "lucide-react"
 import { toast } from "sonner"
 
@@ -21,10 +21,16 @@ import { cn } from "@/lib/utils"
  * height, the pair centered as one block.
  */
 export function EasterEggModal() {
-  const [open, setOpen] = useState(true)
+  // Opened after mount: the dialog renders into a portal, which the
+  // prerendered (server) HTML cannot contain.
+  const [open, setOpen] = useState(false)
   const [executed, setExecuted] = useState(false)
   const [runId, setRunId] = useState(0)
   const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    setOpen(true)
+  }, [])
 
   const copyCommand = async () => {
     try {

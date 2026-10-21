@@ -20,13 +20,23 @@ let introPlayed = false
 /** Full homepage UI, shared by the "/" route and the "/78" easter-egg route. */
 export function Home() {
   const [loaderKey, setLoaderKey] = useState(0)
-  const [loading, setLoading] = useState(
-    () => !introPlayed && (window.location.pathname === "/" || window.location.pathname === "/78"),
-  )
+  // The intro is armed after mount, not during the first render: the pages are
+  // prerendered to static HTML, so the server markup has to match the client's
+  // first render exactly (hydration) and cannot depend on window.location.
+  const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
   const [anthemOpen, setAnthemOpen] = useState(false)
   const emblemRef = useRef<HTMLButtonElement>(null)
   const pageRef = useRef<HTMLDivElement>(null)
+
+  // Intro plays only on a real document load of the homepage (refresh); tab
+  // navigation back to 主页 must not replay it. Reset per document load.
+  useEffect(() => {
+    if (introPlayed) return
+    if (window.location.pathname === "/" || window.location.pathname === "/78") {
+      setLoading(true)
+    }
+  }, [])
 
   // Hidden until the loader hands over; skipped entirely when the intro is
   // suppressed (tab navigation back to an already-introed document).

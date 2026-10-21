@@ -1,1 +1,6 @@
-/78/ /78 301
+# Prerendered pages are emitted as <name>.html; Pages serves those at the
+# extension-less URL (/about) and redirects /about.html → /about itself, so no
+# rewrite is needed here. Only the trailing-slash variants are normalized.
+/about/   /about   301
+/nailoog/ /nailoog 301
+/78/      /78      301

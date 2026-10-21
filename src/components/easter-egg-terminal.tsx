@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { TerminalIcon } from "lucide-react"
 import { toast } from "sonner"
 
@@ -28,13 +28,24 @@ function MacControls() {
  * MAMA_ART mirrors the function's CLI response byte for byte.
  */
 export function EasterEggTerminal() {
-  const reduced = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches, [])
-  const [typed, setTyped] = useState(() => (reduced ? COMMAND.length : 0))
-  const [printed, setPrinted] = useState(() => (reduced ? ART_LINES.length : 0))
+  // Reduced-motion is detected after mount: window is not available while the
+  // page is rendered to static HTML, and the first render must match it.
+  const [reduced, setReduced] = useState<boolean | null>(null)
+  const [typed, setTyped] = useState(0)
+  const [printed, setPrinted] = useState(0)
 
   const typing = typed < COMMAND.length
   const printing = !typing && printed < ART_LINES.length
   const done = !typing && !printing
+
+  useEffect(() => {
+    const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    setReduced(isReduced)
+    if (isReduced) {
+      setTyped(COMMAND.length)
+      setPrinted(ART_LINES.length)
+    }
+  }, [])
 
   // Success toast when the output finishes; ref guards StrictMode double-fire.
   const announced = useRef(false)
@@ -46,16 +57,16 @@ export function EasterEggTerminal() {
   }, [done])
 
   useEffect(() => {
-    if (!typing) return
+    if (reduced !== false || !typing) return
     const timer = window.setTimeout(() => setTyped((n) => n + 1), TYPE_MS)
     return () => window.clearTimeout(timer)
-  }, [typing, typed])
+  }, [reduced, typing, typed])
 
   useEffect(() => {
-    if (!printing) return
+    if (reduced !== false || !printing) return
     const timer = window.setTimeout(() => setPrinted((n) => n + 1), LINE_MS)
     return () => window.clearTimeout(timer)
-  }, [printing, printed])
+  }, [reduced, printing, printed])
 
   return (
     <div className="no-auto-dark h-full min-w-0">

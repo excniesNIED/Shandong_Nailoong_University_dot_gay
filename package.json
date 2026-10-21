@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc -b",
+    "build": "vite build && tsc -b && node scripts/prerender.mjs",
+    "prerender": "node scripts/prerender.mjs",
     "preview": "pnpm build && wrangler pages dev dist",
     "deploy": "pnpm build && wrangler pages deploy",
     "login": "wrangler login"

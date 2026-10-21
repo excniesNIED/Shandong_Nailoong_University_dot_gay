@@ -38,7 +38,7 @@ const AREAS = [
 
 function About() {
   return (
-    <main className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pt-10 pb-16 sm:px-6 sm:pt-14">
+    <main id="main" className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pt-10 pb-16 sm:px-6 sm:pt-14">
       <div className="grid flex-1 items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-14">
         {/* Portrait: interactive emblem on top, copy below. Landscape: copy left, emblem right. */}
         <div className="order-2 max-w-2xl lg:order-1">

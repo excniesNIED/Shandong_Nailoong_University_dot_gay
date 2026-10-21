@@ -1,3 +1,14 @@
-# Cloudflare Workers static-assets header overrides (dist/_headers).
+# Cloudflare Pages header overrides (dist/_headers).
+
+# Baseline security headers for every response.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+
+# llms.txt is plain text, not HTML.
 /llms.txt
   Content-Type: text/plain; charset=utf-8

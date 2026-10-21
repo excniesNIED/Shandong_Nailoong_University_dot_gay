@@ -97,7 +97,7 @@ function NaiCardRow({ title, link, desc }: NaiCard) {
 
 function Nailoog() {
   return (
-    <main className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pt-10 pb-16 sm:px-6 sm:pt-14">
+    <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pt-10 pb-16 sm:px-6 sm:pt-14">
       <header className="max-w-2xl">
         <h1 className="hero-title font-serif text-4xl font-black tracking-tight text-sdnu-navy sm:text-5xl dark:text-slate-50">
           奶<span className="nailong-highlighter mx-1 text-sdnu-navy dark:text-slate-50">家军</span>

@@ -10,8 +10,11 @@ interface IntroLoaderProps {
   onDone: () => void
 }
 
-const DRAW = 1.5
-const STAGGER = 0.16
+// The loader is a full-screen cover: everything the page shows is painted
+// only after it hands over. These values keep the draw readable while the
+// largest contentful paint stays early (mobile LCP was ~4.3s with 1.5/0.16).
+const DRAW = 0.9
+const STAGGER = 0.08
 
 /**
  * Full-screen loader: strokes of the Bézier 奶龙 draw themselves on, the body

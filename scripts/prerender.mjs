@@ -64,7 +64,11 @@ const today = new Date().toISOString().slice(0, 10)
 
 /** Replace a `<meta name=... content=...>` / `<meta property=... content=...>` tag. */
 function setMeta(html, key, content, attr = "name") {
-  const pattern = new RegExp(`<meta ${attr}="${key}" content="[^"]*"\\s*/?>`)
+  // The tag may be written across several lines in the template, so the
+  // attribute order and the whitespace between the attributes are flexible.
+  const pattern = new RegExp(
+    `<meta\\s+${attr}="${key}"\\s+content="[^"]*"\\s*/?>`,
+  )
   if (!pattern.test(html)) throw new Error(`meta ${attr}="${key}" not found in template`)
   const value = content.replace(/"/g, "&quot;")
   return html.replace(pattern, `<meta ${attr}="${key}" content="${value}" />`)

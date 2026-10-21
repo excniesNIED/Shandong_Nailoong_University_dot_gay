@@ -44,22 +44,24 @@ export function SiteHeader() {
         </span>
       </button>
 
-      <Tabs value={active}>
-        <TabsList className="relative rounded-full border border-sdnu-navy/20 bg-white/70 shadow-xs backdrop-blur-sm dark:border-slate-600/60 dark:bg-white/10">
-          <TabsIndicator className="rounded-full border border-transparent bg-background shadow-sm dark:border-input dark:bg-input/30" />
-          {NAV.map((item) => (
-            <TabsTrigger
-              key={item.to}
-              value={item.to}
-              nativeButton={false}
-              render={<Link to={item.to} />}
-              className="rounded-full px-3.5 font-sans text-xs tracking-wider sm:px-4"
-            >
-              {item.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+      <nav aria-label="主导航">
+        <Tabs value={active}>
+          <TabsList className="relative rounded-full border border-sdnu-navy/20 bg-white/70 shadow-xs backdrop-blur-sm dark:border-slate-600/60 dark:bg-white/10">
+            <TabsIndicator className="rounded-full border border-transparent bg-background shadow-sm dark:border-input dark:bg-input/30" />
+            {NAV.map((item) => (
+              <TabsTrigger
+                key={item.to}
+                value={item.to}
+                nativeButton={false}
+                render={<Link to={item.to} />}
+                className="rounded-full px-3.5 font-sans text-xs tracking-wider sm:px-4"
+              >
+                {item.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      </nav>
     </header>
   )
 }

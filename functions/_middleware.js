@@ -19,17 +19,35 @@ const HOME_MARKDOWN = `# 山东奶龙大学（山东师范大学奶龙官方组�
 - Sitemap：https://xn--xhq02y0gz4ebvbj98t.gay/sitemap.xml
 `;
 
+const NOT_FOUND_MARKDOWN = `# 404：这个页面不存在
+
+这个页面不存在，可能去长清湖校区上课了。你要找的东西大概在下面三个地方：
+
+- 首页：https://xn--xhq02y0gz4ebvbj98t.gay/
+- 站点说明（供 AI 助手）：https://xn--xhq02y0gz4ebvbj98t.gay/llms.txt
+- Sitemap：https://xn--xhq02y0gz4ebvbj98t.gay/sitemap.xml
+
+本站系山东师范大学学生自发组建的野生整活组织，与山东师范大学官方无隶属关系；学校官方信息请以 https://www.sdnu.edu.cn 为准。
+`;
+
 /**
- * Root middleware: serves `Accept: text/markdown` on "/" so agents get the
- * homepage as Markdown; every other request falls through to the next handler
- * (route Function or static asset). Only "/" reaches Functions via
- * `_routes.json`, so static asset traffic never invokes this code.
+ * Root middleware.
+ *
+ * - `Accept: text/markdown` on "/" returns the homepage as Markdown.
+ * - `Accept: text/markdown` on an unknown path returns a Markdown error body
+ *   with the 404 status Pages already produced, so agents can read the
+ *   failure without a JavaScript runtime.
+ * - Everything else falls through to the route Function or the static asset.
+ *
+ * `_routes.json` includes every path, so this code also sees the 404s; static
+ * asset traffic only pays for the extra hop.
  */
 export async function onRequest({ request, next }) {
   const url = new URL(request.url);
-  if (url.pathname !== "/") return next();
-  if (request.method !== "GET" && request.method !== "HEAD") return next();
-  if ((request.headers.get("Accept") || "").includes("text/markdown")) {
+  const isRead = request.method === "GET" || request.method === "HEAD";
+  const wantsMarkdown = (request.headers.get("Accept") || "").includes("text/markdown");
+
+  if (url.pathname === "/" && isRead && wantsMarkdown) {
     const body = request.method === "HEAD" ? null : HOME_MARKDOWN;
     return new Response(body, {
       status: 200,
@@ -40,8 +58,26 @@ export async function onRequest({ request, next }) {
       },
     });
   }
+
   const response = await next();
+
+  if (wantsMarkdown && isRead && response.status === 404) {
+    const body = request.method === "HEAD" ? null : NOT_FOUND_MARKDOWN;
+    return new Response(body, {
+      status: 404,
+      headers: {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "Vary": "Accept",
+        "Cache-Control": "no-store",
+      },
+    });
+  }
+
   const res = new Response(response.body, response);
-  res.headers.append("Vary", "Accept");
+  const contentType = res.headers.get("Content-Type") || "";
+  // Only the responses that can differ per Accept header need to vary.
+  if (contentType.includes("text/html") || res.status === 404) {
+    res.headers.append("Vary", "Accept");
+  }
   return res;
 }

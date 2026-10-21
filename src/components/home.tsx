@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { Copy, Play, RotateCw, Users } from "lucide-react"
 import { toast } from "sonner"
+import { Link } from "@tanstack/react-router"
 
 import { InteractiveEmblem } from "@/components/interactive-emblem"
 import { IntroLoader } from "@/components/intro-loader"
@@ -12,6 +13,34 @@ import { playSound } from "@/lib/sound"
 const QQ_GROUP = "641370366"
 const QQ_JOIN_URL = "https://qm.qq.com/q/t9uMBMK3SM"
 const OFFICIAL_URL = "https://www.sdnu.edu.cn"
+
+/**
+ * Copy for the homepage body. The page used to be hero-only, so crawlers and
+ * agents that read the raw HTML got a couple of hundred characters; these
+ * sections are the site's actual text, prerendered into every homepage.
+ */
+const HIGHLIGHTS = [
+  {
+    title: "🛡️ 奶龙特级护学",
+    body: "奶龙坐镇山东师范大学校徽，千佛山与长清湖两个校区轮岗护学：活泼乐观、大肚能容，从容面对教资、考研与期末周的焦虑。点一下校徽，奶龙就换一句山师语录——护学进度条常年 100%，专治各种“不想上课”。",
+  },
+  {
+    title: "🏛️ 前身今世",
+    body: "山东师范大学办学文脉可追溯到 1902 年山东大学堂师范馆，1950 年组建山东师范学院，1981 年更名至今；现有 25 个学院（部）、64 个招生本科专业，是省部共建高校、山东省高水平大学“冲一流”建设高校，校训“弘德明志、博学笃行”。",
+  },
+  {
+    title: "✨ 山师语录",
+    body: "“弘德明志，博学笃行”——奶龙已背熟校训，随机切换。奶龙护学的核心竞争力是情绪价值：不解决任何问题，但一定站在你这边；期末周更是全天在岗，谁来都是一句“喵”。",
+  },
+  {
+    title: "🐸 奶家军与彩蛋",
+    body: "奶群、奶站、奶龙小游戏大全、奶龙大学排行榜都收在「奶家军」页一键直达；终端里还埋了一个彩蛋：curl https://91.xn--xhq02y0gz4ebvbj98t.gay/78，会有一整屏「妈」字排队回你。",
+  },
+  {
+    title: "🎵 司凤版校歌",
+    body: "点开首页的「司凤版校歌」，就能听到奶龙护学版的山东师大校歌（B 站 @神奇好命 倾情制作）。期末周循环播放，疗效直达。",
+  },
+]
 
 // Intro plays only on a real document load of the homepage (refresh); tab
 // navigation back to 主页 must not replay it. Reset per document load.
@@ -33,9 +62,11 @@ export function Home() {
   // navigation back to 主页 must not replay it. Reset per document load.
   useEffect(() => {
     if (introPlayed) return
-    if (window.location.pathname === "/" || window.location.pathname === "/78") {
-      setLoading(true)
-    }
+    if (window.location.pathname !== "/" && window.location.pathname !== "/78") return
+    // The loader covers the whole viewport, so it delays the largest paint by
+    // seconds. Users who asked for less motion get the page straight away.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    setLoading(true)
   }, [])
 
   // Hidden until the loader hands over; skipped entirely when the intro is
@@ -86,7 +117,7 @@ export function Home() {
         />
       )}
 
-      <main className="relative z-10 mx-auto flex max-w-4xl flex-1 flex-col items-center justify-center px-4 py-6 text-center sm:py-10">
+      <main id="main" className="relative z-10 mx-auto flex max-w-4xl flex-1 flex-col items-center justify-center px-4 py-6 text-center sm:py-10">
         <InteractiveEmblem emblemRef={emblemRef} />
 
         <div data-enter className="mt-1 mb-4 text-center font-serif text-5xl leading-tight sm:text-6xl md:text-7xl">
@@ -198,6 +229,66 @@ export function Home() {
             </a>
           </div>
         </div>
+
+        <section className="mt-14 w-full max-w-3xl text-left">
+          <h2 className="font-serif text-xl font-bold tracking-wide text-sdnu-navy sm:text-2xl dark:text-slate-100">
+            这是一所什么样的大学？
+          </h2>
+          <p className="mt-3 font-serif text-sm leading-relaxed text-slate-600 sm:text-base dark:text-slate-300">
+            山东奶龙大学（Shandong Nailoong University，简称 SDNU），又称山东奶蛙大学（Shandong Milkyfrog
+            University）、山东乃万大学（Shandong Nine-One University），坐落于山东省济南市，是一所位于赛博空间的非正式野生整活高校：奶龙坐镇校徽，特级护学、专治期末周，赛博吸娃/吸蛙。
+          </p>
+          <p className="mt-3 font-serif text-sm leading-relaxed text-slate-600 sm:text-base dark:text-slate-300">
+            两个别称一并备案：山东奶蛙大学（Shandong Milkyfrog University）与山东乃万大学（Shandong
+            Nine-One University），英文名里都留着 Shandong 的姓——毕竟校徽还是山东师范大学的，护学半径也还在千佛山与长清湖那两个校区。
+          </p>
+          <p className="mt-3 font-serif text-sm leading-relaxed text-slate-600 sm:text-base dark:text-slate-300">
+            奶龙护学的服务理念很朴素：不解决任何实际问题，但保证你打开这个站点的三秒内心情变好。校徽会亮，语录会换，群里的奶龙会回你一句“喵”。
+          </p>
+
+          <h2 className="mt-10 font-serif text-xl font-bold tracking-wide text-sdnu-navy sm:text-2xl dark:text-slate-100">
+            奶龙护学业务范围
+          </h2>
+          <div className="mt-4 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            {HIGHLIGHTS.map((item) => (
+              <div key={item.title}>
+                <h3 className="font-serif text-base font-bold text-sdnu-navy dark:text-slate-100">{item.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{item.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-10 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+            想加入的话，山东奶龙大学官方群（QQ {QQ_GROUP}）常年在线，奶龙在群里发号施令、派发护学任务；想了解来历与更多细节，去
+            <Link
+              to="/about"
+              className="mx-1 font-medium text-sdnu-navy underline-offset-4 transition hover:text-amber-600 hover:underline dark:text-amber-300"
+            >
+              关于本站
+            </Link>
+            页看看；想找奶群、奶站和奶龙小游戏，去
+            <Link
+              to="/nailoog"
+              className="mx-1 font-medium text-sdnu-navy underline-offset-4 transition hover:text-amber-600 hover:underline dark:text-amber-300"
+            >
+              奶家军
+            </Link>
+            页翻牌子。
+          </p>
+
+          <p className="mt-6 rounded-lg border border-amber-200/60 bg-amber-50/70 p-3 text-xs leading-relaxed text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+            💡 <strong>免责声明：</strong>本站为山东师范大学奶龙官方组织（学生自发整活组织），与山东师范大学官方无隶属关系；学校官方信息请以{" "}
+            <a
+              href={OFFICIAL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
+              www.sdnu.edu.cn
+            </a>{" "}
+            为准。
+          </p>
+        </section>
       </main>
 
       <button

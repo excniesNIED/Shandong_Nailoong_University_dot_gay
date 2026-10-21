@@ -46,6 +46,24 @@
   font-style: normal;
   font-display: swap;
 }
+/* Hero display subset: only the glyphs the <h1>s use (山东奶龙大学 / 奶家军).
+   The full CJK serif is 276 KB and lands ~3.5 s into a throttled mobile load,
+   which is exactly when the main title used to repaint — and what the mobile
+   LCP was waiting for. This 4.5 KB copy carries the same outlines, so the
+   headings look identical but paint in the first round trip.
+   Regenerate with:
+     pyftsubset "fonts-src/郑庆科南北词宫谱宋体.woff2" \
+       --output-file=public/fonts/NailongDisplay.woff2 --flavor=woff2 \
+       --unicodes=U+5C71,U+4E1C,U+5976,U+9F99,U+5927,U+5B66,U+5BB6,U+519B \
+       --no-hinting --desubroutinize */
+@font-face {
+  font-family: "NailongDisplay";
+  src: url("/fonts/NailongDisplay.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+5C71, U+4E1C, U+5976, U+9F99, U+5927, U+5B66, U+5BB6, U+519B;
+}
 @font-face {
   font-family: "爱点风雅黑长体";
   src: url("/fonts/AiDianFengYaHei.woff2") format("woff2");
@@ -55,7 +73,7 @@
 }
 
 @theme {
-  --font-serif: "Alice", "郑庆科南北词宫谱宋体", "Source Han Serif SC", SimSun, STSong, serif;
+  --font-serif: "Alice", "NailongDisplay", "郑庆科南北词宫谱宋体", "Source Han Serif SC", SimSun, STSong, serif;
   --font-sans: "Geom", "爱点风雅黑长体", system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
 
   --color-sdnu-navy: #153e75;

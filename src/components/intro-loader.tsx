@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react"
+import { useLayoutEffect, useRef, type RefObject } from "react"
 import { gsap } from "gsap"
 
 import { NAILONG_VIEWBOX, NailongFigure } from "@/components/nailong-figure"
@@ -8,6 +8,12 @@ interface IntroLoaderProps {
   onReveal: () => void
   /** Fires after the overlay has fully faded and may be unmounted. */
   onDone: () => void
+  /**
+   * The page's main title. The greeting morphs into it: the caption travels
+   * to the title's box and scales to its width while the overlay dissolves,
+   * so the handover reads as one title motion instead of two.
+   */
+  handoverTarget?: RefObject<HTMLElement | null>
 }
 
 // The loader is a full-screen cover: everything the page shows is painted
@@ -15,13 +21,15 @@ interface IntroLoaderProps {
 // largest contentful paint stays early (mobile LCP was ~4.3s with 1.5/0.16).
 const DRAW = 0.9
 const STAGGER = 0.08
+// Length of the cross-dissolve: caption → title, overlay → page.
+const HANDOFF = 0.62
 
 /**
  * Full-screen loader: strokes of the Bézier 奶龙 draw themselves on, the body
  * floods with yellow (bottom-up wipe), the caption fills, then the overlay
  * dissolves into the page. Mirrors React Bits StrokeText (dash draw → fill wipe).
  */
-export function IntroLoader({ onReveal, onDone }: IntroLoaderProps) {
+export function IntroLoader({ onReveal, onDone, handoverTarget }: IntroLoaderProps) {
   const rootRef = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
@@ -29,6 +37,7 @@ export function IntroLoader({ onReveal, onDone }: IntroLoaderProps) {
     if (!root) return
     const strokes = Array.from(root.querySelectorAll<SVGGeometryElement>("[data-stroke]"))
     const wipe = root.querySelector("[data-wipe]")
+    const captionBox = root.querySelector<HTMLElement>("[data-caption]")
     const caption = root.querySelectorAll("[data-caption] > span")
     const progress = root.querySelector("[data-progress]")
     const figure = root.querySelector("[data-figure]")
@@ -56,10 +65,30 @@ export function IntroLoader({ onReveal, onDone }: IntroLoaderProps) {
       tl.to(caption, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.06 }, 0.5)
       tl.to(wipe, { attr: { y: -3.8, height: 8.2 }, duration: 0.9, ease: "power2.inOut" }, drawEnd + 0.1)
       tl.to(figure, { scale: 1.06, duration: 0.18, ease: "power1.out", yoyo: true, repeat: 1, transformOrigin: "50% 100%" })
-      // ctx.ignore: tweens created by the page must not be reverted with the loader.
-      tl.add(() => ctx.ignore(onReveal), "+=0.15")
-      tl.to(figure, { scale: 0.45, y: -40, opacity: 0, duration: 0.55, ease: "back.in(1.4)" }, "<")
-      tl.to(root, { opacity: 0, duration: 0.6, ease: "power2.out" }, "<0.2")
+      // Handover: the greeting travels to the page title and scales to its
+      // width while the overlay dissolves and the title fades in behind it —
+      // one continuous title motion.
+      tl.add(
+        () => {
+          // ctx.ignore: tweens created by the page must not be reverted with the loader.
+          ctx.ignore(onReveal)
+          const target = handoverTarget?.current
+          if (!target || !captionBox) return
+          const from = captionBox.getBoundingClientRect()
+          const to = target.getBoundingClientRect()
+          if (!from.width || !to.width) return
+          gsap.to(captionBox, {
+            x: to.left + to.width / 2 - (from.left + from.width / 2),
+            y: to.top + to.height / 2 - (from.top + from.height / 2),
+            scale: to.width / from.width,
+            duration: HANDOFF,
+            ease: "power2.inOut",
+          })
+        },
+        "-=0.1",
+      )
+      tl.to(figure, { scale: 0.45, y: -40, opacity: 0, duration: 0.5, ease: "back.in(1.4)" }, "<0.05")
+      tl.to(root, { opacity: 0, duration: HANDOFF, ease: "power2.inOut" }, "<0.05")
     }, root)
     return () => ctx.revert()
     // Callbacks are fixed for one loader lifetime; a replay remounts via key.

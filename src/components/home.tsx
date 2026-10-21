@@ -57,6 +57,7 @@ export function Home() {
   const [anthemOpen, setAnthemOpen] = useState(false)
   const emblemRef = useRef<HTMLButtonElement>(null)
   const pageRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
 
   // Intro plays only on a real document load of the homepage (refresh); tab
   // navigation back to 主页 must not replay it. Reset per document load.
@@ -66,6 +67,9 @@ export function Home() {
     // The loader covers the whole viewport, so it delays the largest paint by
     // seconds. Users who asked for less motion get the page straight away.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    // Narrow screens skip it too: the intro is a cover, and on a phone the
+    // first paint matters more than the drawing.
+    if (window.matchMedia("(max-width: 639px)").matches) return
     setLoading(true)
   }, [])
 
@@ -109,6 +113,7 @@ export function Home() {
       {loading && (
         <IntroLoader
           key={loaderKey}
+          handoverTarget={titleRef}
           onReveal={_0x4e2f}
           onDone={() => {
             introPlayed = true
@@ -121,7 +126,7 @@ export function Home() {
         <InteractiveEmblem emblemRef={emblemRef} />
 
         <div data-enter className="mt-1 mb-4 text-center font-serif text-5xl leading-tight sm:text-6xl md:text-7xl">
-          <h1 className="hero-title font-black tracking-tight text-sdnu-navy dark:text-slate-50">
+          <h1 ref={titleRef} className="hero-title font-black tracking-tight text-sdnu-navy dark:text-slate-50">
             山东<span className="nailong-highlighter mx-1 text-sdnu-navy dark:text-slate-50">奶龙</span>大学
           </h1>
           <p className="mt-2 text-[0.4em] font-normal tracking-[0.057em] text-sdnu-navy/70 sm:mt-3 dark:text-slate-400">

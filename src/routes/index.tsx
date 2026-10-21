@@ -5,7 +5,7 @@ import { Home } from "@/components/home"
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "山东奶龙大学（Shandong Nailoong University，SDNU）" },
+      { title: "山东奶龙大学 · SDNU" },
       {
         name: "description",
         content:

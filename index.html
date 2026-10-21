@@ -109,20 +109,32 @@
     <link rel="preload" href="/fonts/NanBeiCiGongSerif.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/Alice-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/AiDianFengYaHei.woff2" as="font" type="font/woff2" crossorigin />
+    <!--
+      Progressive enhancement: with scripting off, the SEO fallback copy on
+      the homepage is laid out as normal text instead of the 1px clip. With
+      CSS off, the rule that clips it never applies, so it shows either way.
+    -->
+    <noscript>
+      <style>
+        .seo-fallback {
+          position: static !important;
+          width: auto !important;
+          height: auto !important;
+          margin: 0 !important;
+          padding: 1rem !important;
+          overflow: visible !important;
+          clip: auto !important;
+          white-space: normal !important;
+        }
+      </style>
+    </noscript>
+
     <link rel="preload" href="/fonts/Geom-Variable.woff2" as="font" type="font/woff2" crossorigin />
 
     <script defer src="https://analytics.hxcn.dev/script.js" data-website-id="adfff7bd-43d2-4e3b-a4f1-03507a152dec"></script>
   </head>
   <body>
     <div id="root"></div>
-    <noscript>
-      <div style="max-width: 40rem; margin: 3rem auto; padding: 0 1rem; font-family: serif; line-height: 1.7">
-        <p><strong>山东奶龙大学（Shandong Nailoong University）</strong></p>
-        <p>本校系学生自发组建的野生整活高校，与山东师范大学官方无隶属关系。</p>
-        <p>山东师范大学坐落在历史文化名城济南，秉承“尊贤尚功、奋发有为”的校园精神和“弘德明志、博学笃行”的校训，是一所综合性高等师范院校，拥有千佛山和长清湖两个校区。</p>
-        <p>山东奶龙大学官方群：QQ 641370366。山东师范大学官网：<a href="https://www.sdnu.edu.cn">www.sdnu.edu.cn</a>。</p>
-      </div>
-    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

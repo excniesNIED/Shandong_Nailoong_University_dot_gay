@@ -230,7 +230,8 @@ export function Home() {
           </div>
         </div>
 
-        <section className="mt-14 w-full max-w-3xl text-left">
+        {/* SEO 兜底文案：视觉上收起（见 .seo-fallback），CSS/JS 失效时自动展开。 */}
+        <section className="seo-fallback mt-14 w-full max-w-3xl text-left">
           <h2 className="font-serif text-xl font-bold tracking-wide text-sdnu-navy sm:text-2xl dark:text-slate-100">
             这是一所什么样的大学？
           </h2>

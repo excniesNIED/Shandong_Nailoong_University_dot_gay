@@ -1,6 +1,26 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/**
+ * SEO 兜底文案：正文写在 DOM 里，但视觉上收成一个 1px 的点。
+ *
+ * - 正常浏览（CSS 与 JS 都可用）：用户看不到，首页观感不变。
+ * - JS 被禁用：<noscript> 里的样式把它放回正常排版，直接可读。
+ * - CSS 加载失败：没有这条规则，文字按普通块级排版显示。
+ * - 爬虫：文字仍在渲染树里，原始 HTML 与渲染后的正文都能取到。
+ */
+.seo-fallback {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
 /* Self-hosted, usage-subset woff2 (public/fonts/). Latin from Alice/Geom,

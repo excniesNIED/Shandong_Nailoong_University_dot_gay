@@ -26,39 +26,22 @@ const MAMA_ART = `      妈                                        妈
 妈妈妈                    妈妈妈妈        妈妈                      妈妈妈
 妈                        妈妈                                      妈妈`;
 
-const BROWSER_UA =
-  /Mozilla|Chrome|Safari|Firefox|Edg|OPR|Opera|MSIE|Trident|AppleWebKit|Gecko/i;
+const CLI_UA =
+  /curl|wget|httpie|python-requests|go-http-client|libwww|node-fetch|^node$|^undici$/i;
 
 /**
- * Browser visit → frontend.
- * curl / wget / nc-style clients → plain-text ASCII art.
+ * Terminals get the ASCII art, everything else gets the page.
+ *
+ * The split is deliberately conservative: only clients that cannot render
+ * HTML ask for it (`Accept: text/plain`) or identify as a command-line tool.
+ * Crawlers that send a wildcard Accept (bingbot, Baidu, Yandex) must still see
+ * the indexable HTML, otherwise a URL in the sitemap answers with plain text.
  */
-function isBrowser(request) {
-  const ua = request.headers.get("User-Agent") || "";
+function wantsAscii(request) {
   const accept = request.headers.get("Accept") || "";
-  const secFetchMode = request.headers.get("Sec-Fetch-Mode");
-
-  // Explicit CLI clients
-  if (/curl|wget|httpie|python-requests|Go-http-client|libwww|fetch/i.test(ua)) {
-    return false;
-  }
-
-  // Modern browsers send Sec-Fetch-*
-  if (secFetchMode === "navigate" || secFetchMode === "nested-navigate") {
-    return true;
-  }
-
-  // Prefer HTML and look like a browser
-  if (BROWSER_UA.test(ua) && accept.includes("text/html")) {
-    return true;
-  }
-
-  // Bare browser UA without Accept (some tools)
-  if (BROWSER_UA.test(ua) && !accept) {
-    return true;
-  }
-
-  return false;
+  if (accept.includes("text/html")) return false;
+  if (accept.includes("text/plain")) return true;
+  return CLI_UA.test(request.headers.get("User-Agent") || "");
 }
 
 function artResponse(request) {
@@ -74,16 +57,16 @@ function artResponse(request) {
 }
 
 /**
- * GET /78: browsers get the prerendered /78 page served in place (env.ASSETS
- * keeps the URL on /78 so the client router matches it and Umami records a
- * /78 pageview — a redirect would rewrite the URL to "/" and lose the easter
- * egg); CLI clients get the ASCII art.
+ * GET /78: terminals get the ASCII art; browsers and crawlers get the
+ * prerendered /78 page served in place. `env.ASSETS` keeps the URL on /78 so
+ * the client router matches it and Umami records a /78 pageview — a redirect
+ * would rewrite the URL to "/" and lose the easter egg. Serving HTML in place
+ * also keeps the sitemap URL indexable: it answers 200 with a canonical and
+ * a title instead of plain text.
  */
 export async function onRequestGet({ request, env }) {
-  if (isBrowser(request)) {
-    return env.ASSETS.fetch(new URL("/78.html", request.url));
-  }
-  return artResponse(request);
+  if (wantsAscii(request)) return artResponse(request);
+  return env.ASSETS.fetch(new URL("/78.html", request.url));
 }
 
 export const onRequestHead = onRequestGet;
